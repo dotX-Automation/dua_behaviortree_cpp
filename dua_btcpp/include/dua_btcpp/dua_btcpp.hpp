@@ -34,6 +34,7 @@
 #include <behaviortree_cpp/bt_factory.h>
 
 #include "arm_component.hpp"
+#include "disarm_component.hpp"
 
 namespace dua_btcpp
 {
@@ -53,6 +54,7 @@ void DUA_BTCPP_PUBLIC register_nodes(
 
 // Action clients
 factory->registerNodeType<ArmComponent>("ArmComponent", node, client_manager);
+factory->registerNodeType<DisarmComponent>("DisarmComponent", node, client_manager);
 
 // Service clients
 // TODO
