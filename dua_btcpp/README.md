@@ -9,6 +9,7 @@ The tree nodes provided in this package allow the tree to interact with various 
 ### Action clients
 
 - [x] **`ArmComponent`**: Arms a component calling the `dua_hardware_interfaces/action/Arm` action.
+- [x] **`DisarmComponent`**: Disarms a component calling the `dua_hardware_interfaces/action/Disarm` action.
 
 ### Service clients
 
