@@ -4,6 +4,26 @@ Library of `BT.CPP` nodes for the DUA framework.
 
 ## Contents
 
+The tree nodes provided in this package allow the tree to interact with various parts of a ROS 2 software architecture.
+
+### Action clients
+
+- [x] **`ArmComponent`**: Arms a component calling the `dua_hardware_interfaces/action/Arm` action.
+
+### Service clients
+
+TODO
+
+### Topic subscribers
+
+TODO
+
+### Topic publishers
+
+TODO
+
+### Utility nodes
+
 TODO
 
 ---

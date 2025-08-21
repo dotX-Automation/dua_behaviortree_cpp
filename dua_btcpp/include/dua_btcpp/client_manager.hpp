@@ -43,8 +43,15 @@ namespace dua_btcpp
  * A thread-safe cache for service and action clients, which can be used to retrieve existing client
  * instances avoiding duplication.
  */
-class DUA_BTCPP_PUBLIC ClientManager{
+class DUA_BTCPP_PUBLIC ClientManager
+{
 public:
+  using SharedPtr = std::shared_ptr<ClientManager>;
+  using WeakPtr = std::weak_ptr<ClientManager>;
+  using UniquePtr = std::unique_ptr<ClientManager>;
+  using ConstSharedPtr = std::shared_ptr<const ClientManager>;
+  using ConstWeakPtr = std::weak_ptr<const ClientManager>;
+
   /**
    * @brief Constructor.
    *
@@ -145,7 +152,7 @@ public:
     }
 
     // Create a new client for the given action, store it, and return it
-    auto new_client = node_->dua_create_action_client<ActionT>(action_name, wait_server);
+    auto new_client = node_->dua_create_action_client<ActionT>(action_name, nullptr, wait_server);
     clients_cache_[action_name] = new_client;
     return new_client;
   }
