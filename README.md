@@ -15,6 +15,7 @@ The following software packages are provided.
 - [x] [**`dua_btcpp`**](dua_btcpp/README.md): Library of `BT.CPP` nodes and tools for the DUA framework.
 - [x] [**`btcpp_executor`**](btcpp_executor/README.md): ROS 2 composable node acting as BT executor.
 - [x] [**`dua_btcpp_extender`**](dua_btcpp_extender/README.md): Base class for `dua_btcpp` custom extensions, based on `pluginlib` and integrated in the `btcpp_executor`.
+- [x] [**`dua_behaviortree_cpp`**](dua_behaviortree_cpp/): Metapackage.
 
 ---
 
