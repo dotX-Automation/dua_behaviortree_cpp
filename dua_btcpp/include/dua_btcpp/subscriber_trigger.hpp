@@ -32,6 +32,8 @@
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
 
+#include <dua_node_cpp/dua_node.hpp>
+
 #include <std_msgs/msg/empty.hpp>
 
 using namespace std_msgs::msg;
