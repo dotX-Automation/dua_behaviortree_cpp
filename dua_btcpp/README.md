@@ -24,10 +24,6 @@ The tree nodes provided in this package allow the tree to interact with various 
 
 - [x] **`PublishString`**: Publishes a string message to a ROS 2 topic.
 
-### Utility nodes
-
-TODO
-
 ---
 
 ## Copyright and License
