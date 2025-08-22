@@ -39,6 +39,8 @@
 #include "trigger_component.hpp"
 #include "set_component_state.hpp"
 
+#include "publish_string.hpp"
+
 namespace dua_btcpp
 {
 
@@ -47,31 +49,31 @@ namespace dua_btcpp
  *
  * @param factory Pointer to the BT.CPP factory to use.
  * @param node Pointer to the ROS 2 node to use.
- * @param client_manager Pointer to the client manager to use.
+ * @param entity_manager Pointer to the entity manager to use.
  * @param wait_servers Enables waiting for service/action servers upon client creation.
  * @param spin Enables spinning the ROS 2 node when client nodes call services/actions.
  */
 void DUA_BTCPP_PUBLIC register_nodes(
   std::shared_ptr<BT::BehaviorTreeFactory> factory,
   std::shared_ptr<dua_node::NodeBase> node,
-  std::shared_ptr<EntityManager> client_manager,
+  std::shared_ptr<EntityManager> entity_manager,
   bool wait_servers,
   bool spin)
 {
 
-// Action clients
-factory->registerNodeType<ArmComponent>("ArmComponent", node, client_manager, wait_servers, spin);
-factory->registerNodeType<DisarmComponent>("DisarmComponent", node, client_manager, wait_servers, spin);
+  // Action clients
+  factory->registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
+  factory->registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
 
-// Service clients
-factory->registerNodeType<TriggerComponent>("TriggerComponent", node, client_manager, wait_servers, spin);
-factory->registerNodeType<SetComponentState>("SetComponentState", node, client_manager, wait_servers, spin);
+  // Service clients
+  factory->registerNodeType<TriggerComponent>("TriggerComponent", node, entity_manager, wait_servers, spin);
+  factory->registerNodeType<SetComponentState>("SetComponentState", node, entity_manager, wait_servers, spin);
 
-// Topic subscribers
-// TODO
+  // Topic subscribers
+  // TODO
 
-// Topic publishers
-// TODO
+  // Topic publishers
+  factory->registerNodeType<PublishString>("PublishString", node, entity_manager);
 
 }
 
