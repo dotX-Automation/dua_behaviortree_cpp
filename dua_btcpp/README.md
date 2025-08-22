@@ -22,7 +22,7 @@ TODO
 
 ### Topic publishers
 
-TODO
+- [x] **`PublishString`**: Publishes a string message to a ROS 2 topic.
 
 ### Utility nodes
 
