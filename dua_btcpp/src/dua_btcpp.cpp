@@ -34,7 +34,6 @@ void register_nodes(
   bool wait_servers,
   bool spin)
 {
-
   // Action clients
   factory->registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
   factory->registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
@@ -48,7 +47,6 @@ void register_nodes(
 
   // Topic publishers
   factory->registerNodeType<PublishString>("PublishString", node, entity_manager);
-
 }
 
 } // namespace dua_btcpp

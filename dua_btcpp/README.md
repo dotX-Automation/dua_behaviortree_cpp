@@ -18,7 +18,7 @@ The tree nodes provided in this package allow the tree to interact with various 
 
 ### Topic subscribers
 
-- [x] **`SubscriberTrigger`**: `StatefulActionNode` that waits for an `std_msgs/msg/Emtpy` message.
+- [x] **`SubscriberTrigger`**: `StatefulActionNode` that waits for an `std_msgs/msg/Empty` message.
 
 ### Topic publishers
 
