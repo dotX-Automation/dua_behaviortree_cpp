@@ -28,25 +28,25 @@ namespace dua_btcpp
 {
 
 void register_nodes(
-  std::shared_ptr<BT::BehaviorTreeFactory> factory,
+  BT::BehaviorTreeFactory & factory,
   std::shared_ptr<dua_node::NodeBase> node,
   std::shared_ptr<EntityManager> entity_manager,
   bool wait_servers,
   bool spin)
 {
   // Action clients
-  factory->registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
-  factory->registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
 
   // Service clients
-  factory->registerNodeType<TriggerComponent>("TriggerComponent", node, entity_manager, wait_servers, spin);
-  factory->registerNodeType<SetComponentState>("SetComponentState", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<TriggerComponent>("TriggerComponent", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<SetComponentState>("SetComponentState", node, entity_manager, wait_servers, spin);
 
   // Topic subscribers
-  factory->registerNodeType<SubscriberTrigger>("SubscriberTrigger", node);
+  factory.registerNodeType<SubscriberTrigger>("SubscriberTrigger", node);
 
   // Topic publishers
-  factory->registerNodeType<PublishString>("PublishString", node, entity_manager);
+  factory.registerNodeType<PublishString>("PublishString", node, entity_manager);
 }
 
 } // namespace dua_btcpp

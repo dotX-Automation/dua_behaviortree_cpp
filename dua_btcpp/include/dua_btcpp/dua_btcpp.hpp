@@ -49,14 +49,16 @@ namespace dua_btcpp
 /**
  * @brief Registers all the nodes in this library to the given factory.
  *
- * @param factory Pointer to the BT.CPP factory to use.
+ * @param factory BT.CPP factory to use.
  * @param node Pointer to the ROS 2 node to use.
  * @param entity_manager Pointer to the entity manager to use.
  * @param wait_servers Enables waiting for service/action servers upon client creation.
  * @param spin Enables spinning the ROS 2 node when client nodes call services/actions.
+ * @throws std::runtime_error if any node fails to register.
+ * @throws std::bad_any_cast if clients instantiation is misconfigured.
  */
 void DUA_BTCPP_PUBLIC register_nodes(
-  std::shared_ptr<BT::BehaviorTreeFactory> factory,
+  BT::BehaviorTreeFactory & factory,
   std::shared_ptr<dua_node::NodeBase> node,
   std::shared_ptr<EntityManager> entity_manager,
   bool wait_servers,
