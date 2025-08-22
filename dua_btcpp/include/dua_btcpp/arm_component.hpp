@@ -103,4 +103,4 @@ private:
   bool spin_ = false;
 };
 
-}  // namespace dua_btcpp
+} // namespace dua_btcpp

@@ -36,6 +36,9 @@
 #include "arm_component.hpp"
 #include "disarm_component.hpp"
 
+#include "trigger_component.hpp"
+#include "set_component_state.hpp"
+
 namespace dua_btcpp
 {
 
@@ -61,7 +64,8 @@ factory->registerNodeType<ArmComponent>("ArmComponent", node, client_manager, wa
 factory->registerNodeType<DisarmComponent>("DisarmComponent", node, client_manager, wait_servers, spin);
 
 // Service clients
-// TODO
+factory->registerNodeType<TriggerComponent>("TriggerComponent", node, client_manager, wait_servers, spin);
+factory->registerNodeType<SetComponentState>("SetComponentState", node, client_manager, wait_servers, spin);
 
 // Topic subscribers
 // TODO

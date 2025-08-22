@@ -13,7 +13,8 @@ The tree nodes provided in this package allow the tree to interact with various 
 
 ### Service clients
 
-TODO
+- [x] **`SetComponentState`**: Sets the state of a component calling the `std_srvs/srv/SetBool` service.
+- [x] **`TriggerComponent`**: Triggers a component calling the `std_srvs/srv/Trigger` service.
 
 ### Topic subscribers
 

@@ -1,9 +1,9 @@
 /**
- * Disarms a component.
+ * Sets the (binary) state of a component.
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
- * August 21, 2025
+ * August 22, 2025
  */
 
 /**
@@ -34,20 +34,17 @@
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
 
-#include <dua_common_interfaces/msg/command_result_stamped.hpp>
-#include <dua_hardware_interfaces/action/disarm.hpp>
+#include <std_srvs/srv/set_bool.hpp>
 
-using namespace dua_common_interfaces::msg;
-
-using namespace dua_hardware_interfaces::action;
+using namespace std_srvs::srv;
 
 namespace dua_btcpp
 {
 
 /**
- * Node that disarms a component.
+ * Node that sets the binary state of a component.
  */
-class DUA_BTCPP_PUBLIC DisarmComponent : public BT::SyncActionNode
+class DUA_BTCPP_PUBLIC SetComponentState : public BT::SyncActionNode
 {
 public:
   /**
@@ -58,10 +55,10 @@ public:
    * @param ros2_node Pointer to the ROS 2 node.
    * @param clients_cache Pointer to the clients cache.
    * @param wait_server Wait for server to come up upon creation of the client.
-   * @param spin Whether to spin the ROS 2 node when this node calls the action.
-   * @throws std::runtime_error if the action name has not been correctly specified.
+   * @param spin Whether to spin the ROS 2 node when this node calls the service.
+   * @throws std::runtime_error if the service name has not been correctly specified.
    */
-  DisarmComponent(
+  SetComponentState(
     const std::string & node_name,
     const BT::NodeConfig & node_config,
     const dua_node::NodeBase::SharedPtr & ros2_node,
@@ -72,7 +69,7 @@ public:
   /**
    * @brief Destructor.
    */
-  ~DisarmComponent();
+  ~SetComponentState();
 
   /**
    * @brief Returns the list of ports used by this node.
@@ -93,8 +90,8 @@ private:
   /* Pointer to clients cache. */
   ClientManager::SharedPtr clients_cache_ = nullptr;
 
-  /* Pointer to action client. */
-  simple_actionclient::Client<Disarm>::SharedPtr action_client_ = nullptr;
+  /* Pointer to service client. */
+  simple_serviceclient::Client<SetBool>::SharedPtr service_client_ = nullptr;
 
   /* Wait for server to come up upon creation of the client. */
   bool wait_server_ = true;
