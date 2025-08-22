@@ -29,8 +29,6 @@
 
 #include "visibility_control.h"
 
-#include "entity_manager.hpp"
-
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
 
