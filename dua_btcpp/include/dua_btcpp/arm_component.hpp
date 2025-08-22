@@ -58,6 +58,7 @@ public:
    * @param ros2_node Pointer to the ROS 2 node.
    * @param clients_cache Pointer to the clients cache.
    * @param wait_server Wait for server to come up upon creation of the client.
+   * @param spin Whether to spin the ROS 2 node when this node calls the action.
    * @throws std::runtime_error if the action name has not been correctly specified.
    */
   ArmComponent(
@@ -65,7 +66,8 @@ public:
     const BT::NodeConfig & node_config,
     const dua_node::NodeBase::SharedPtr & ros2_node,
     const ClientManager::SharedPtr & clients_cache,
-    bool wait_server = false);
+    bool wait_server = false,
+    bool spin = false);
 
   /**
    * @brief Destructor.
@@ -96,6 +98,9 @@ private:
 
   /* Wait for server to come up upon creation of the client. */
   bool wait_server_ = true;
+
+  /* Spin the ROS 2 node when this node acts. */
+  bool spin_ = false;
 };
 
 }  // namespace dua_btcpp

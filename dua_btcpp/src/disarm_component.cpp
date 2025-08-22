@@ -32,11 +32,13 @@ DisarmComponent::DisarmComponent(
   const BT::NodeConfig & node_config,
   const dua_node::NodeBase::SharedPtr & ros2_node,
   const ClientManager::SharedPtr & clients_cache,
-  bool wait_server)
+  bool wait_server,
+  bool spin)
 : BT::SyncActionNode(node_name, node_config),
   ros2_node_(ros2_node),
   clients_cache_(clients_cache),
-  wait_server_(wait_server)
+  wait_server_(wait_server),
+  spin_(spin)
 {
   // The following cases must be handled to create the action client
   // - We use now the action_name in the port: a static string
@@ -81,7 +83,7 @@ BT::NodeStatus DisarmComponent::tick()
 
   // Try to disarm the component
   Disarm::Goal disarm_goal{};
-  auto disarm_res = action_client_->call_sync(disarm_goal, false);
+  auto disarm_res = action_client_->call_sync(disarm_goal, spin_);
   bool success = std::get<0>(disarm_res) &&
     (std::get<1>(disarm_res) == rclcpp_action::ResultCode::SUCCEEDED ||
      std::get<1>(disarm_res) == rclcpp_action::ResultCode::UNKNOWN) &&

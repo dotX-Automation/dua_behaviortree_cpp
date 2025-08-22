@@ -32,11 +32,13 @@ ArmComponent::ArmComponent(
   const BT::NodeConfig & node_config,
   const dua_node::NodeBase::SharedPtr & ros2_node,
   const ClientManager::SharedPtr & clients_cache,
-  bool wait_server)
+  bool wait_server,
+  bool spin)
 : BT::SyncActionNode(node_name, node_config),
   ros2_node_(ros2_node),
   clients_cache_(clients_cache),
-  wait_server_(wait_server)
+  wait_server_(wait_server),
+  spin_(spin)
 {
   // The following cases must be handled to create the action client
   // - We use now the action_name in the port: a static string
@@ -81,7 +83,7 @@ BT::NodeStatus ArmComponent::tick()
 
   // Try to arm the component
   Arm::Goal arm_goal{};
-  auto arm_res = action_client_->call_sync(arm_goal, false);
+  auto arm_res = action_client_->call_sync(arm_goal, spin_);
   bool success = std::get<0>(arm_res) &&
     (std::get<1>(arm_res) == rclcpp_action::ResultCode::SUCCEEDED ||
      std::get<1>(arm_res) == rclcpp_action::ResultCode::UNKNOWN) &&

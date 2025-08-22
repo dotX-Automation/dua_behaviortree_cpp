@@ -45,16 +45,20 @@ namespace dua_btcpp
  * @param factory Pointer to the BT.CPP factory to use.
  * @param node Pointer to the ROS 2 node to use.
  * @param client_manager Pointer to the client manager to use.
+ * @param wait_servers Enables waiting for service/action servers upon client creation.
+ * @param spin Enables spinning the ROS 2 node when client nodes call services/actions.
  */
 void DUA_BTCPP_PUBLIC register_nodes(
   std::shared_ptr<BT::BehaviorTreeFactory> factory,
   std::shared_ptr<dua_node::NodeBase> node,
-  std::shared_ptr<ClientManager> client_manager)
+  std::shared_ptr<ClientManager> client_manager,
+  bool wait_servers,
+  bool spin)
 {
 
 // Action clients
-factory->registerNodeType<ArmComponent>("ArmComponent", node, client_manager);
-factory->registerNodeType<DisarmComponent>("DisarmComponent", node, client_manager);
+factory->registerNodeType<ArmComponent>("ArmComponent", node, client_manager, wait_servers, spin);
+factory->registerNodeType<DisarmComponent>("DisarmComponent", node, client_manager, wait_servers, spin);
 
 // Service clients
 // TODO
