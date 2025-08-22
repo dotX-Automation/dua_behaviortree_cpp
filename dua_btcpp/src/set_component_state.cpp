@@ -31,7 +31,7 @@ SetComponentState::SetComponentState(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
   const dua_node::NodeBase::SharedPtr & ros2_node,
-  const ClientManager::SharedPtr & clients_cache,
+  const EntityManager::SharedPtr & clients_cache,
   bool wait_server,
   bool spin)
 : BT::SyncActionNode(node_name, node_config),

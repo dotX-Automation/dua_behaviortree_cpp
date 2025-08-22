@@ -28,7 +28,7 @@
 
 #include "visibility_control.h"
 
-#include "client_manager.hpp"
+#include "entity_manager.hpp"
 
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
@@ -54,7 +54,7 @@ namespace dua_btcpp
 void DUA_BTCPP_PUBLIC register_nodes(
   std::shared_ptr<BT::BehaviorTreeFactory> factory,
   std::shared_ptr<dua_node::NodeBase> node,
-  std::shared_ptr<ClientManager> client_manager,
+  std::shared_ptr<EntityManager> client_manager,
   bool wait_servers,
   bool spin)
 {

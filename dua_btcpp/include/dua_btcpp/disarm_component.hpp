@@ -29,7 +29,7 @@
 
 #include "visibility_control.h"
 
-#include "client_manager.hpp"
+#include "entity_manager.hpp"
 
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
@@ -65,7 +65,7 @@ public:
     const std::string & node_name,
     const BT::NodeConfig & node_config,
     const dua_node::NodeBase::SharedPtr & ros2_node,
-    const ClientManager::SharedPtr & clients_cache,
+    const EntityManager::SharedPtr & clients_cache,
     bool wait_server = false,
     bool spin = false);
 
@@ -91,7 +91,7 @@ private:
   dua_node::NodeBase::SharedPtr ros2_node_ = nullptr;
 
   /* Pointer to clients cache. */
-  ClientManager::SharedPtr clients_cache_ = nullptr;
+  EntityManager::SharedPtr clients_cache_ = nullptr;
 
   /* Pointer to action client. */
   simple_actionclient::Client<Disarm>::SharedPtr action_client_ = nullptr;
