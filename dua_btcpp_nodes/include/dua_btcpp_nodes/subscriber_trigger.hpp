@@ -58,7 +58,7 @@ public:
   SubscriberTrigger(
     const std::string & node_name,
     const BT::NodeConfig & node_config,
-    const dua_node::NodeBase::SharedPtr & ros2_node);
+    dua_node::NodeBase * ros2_node);
 
   /**
    * @brief Destructor.
@@ -89,7 +89,7 @@ public:
 
 private:
   /* Pointer to ROS 2 node. */
-  dua_node::NodeBase::SharedPtr ros2_node_ = nullptr;
+  dua_node::NodeBase * ros2_node_ = nullptr;
 
   /* Pointer to topic subscriber. */
   rclcpp::Subscription<Empty>::SharedPtr subscriber_ = nullptr;

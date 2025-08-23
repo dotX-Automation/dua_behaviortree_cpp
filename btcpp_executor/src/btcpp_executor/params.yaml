@@ -1,0 +1,81 @@
+header_include_path: btcpp_executor/btcpp_executor.hpp
+namespace: btcpp_executor
+node_class_name: BTExecutor
+
+params:
+  autostart:
+    type: bool
+    default_value: false
+    description: "Automatically starts the BT executor after node creation"
+    constraints: ""
+    read_only: true
+
+  btcpp.groot2_publisher:
+    type: bool
+    default_value: false
+    description: "Enables Groot2 publisher (requires ZeroMQ and MySQL)"
+    constraints: "Changes require executor restart"
+    read_only: false
+
+  btcpp.main_tree_name:
+    type: string
+    default_value: "MainTree"
+    description: "The name of the main behavior tree"
+    constraints: "Changes require executor restart"
+    read_only: false
+
+  btcpp.global_blackboard.persistent:
+    type: bool
+    default_value: false
+    description: "If true, the global blackboard is persistent (data is kept between tree executions)"
+    constraints: "Changes require executor restart"
+    read_only: false
+    var_name: global_bb_persistent_
+
+  btcpp.debug.print_statistics:
+    type: bool
+    default_value: false
+    description: "If true, prints statistics about the execution of the nodes after the tree has finished executing"
+    constraints: "Requires debug=true, changes require executor restart"
+    read_only: false
+
+  btcpp.debug.treenodes_model_path:
+    type: string
+    default_value: ""
+    description: "Path to the XML file where the TreeNodesModel will be written, if not empty"
+    constraints: "Requires debug=true, changes require executor restart"
+    read_only: false
+
+  btcpp.tick_rate:
+    type: integer
+    default_value: 30
+    min_value: 1
+    max_value: 1000
+    step: 1
+    description: "Tree execution tick rate [Hz]"
+    constraints: "Changes require executor restart"
+    read_only: false
+
+  btcpp.tree_files:
+    type: string_array
+    default_value:
+      - ""
+    description: "List of paths to XML files containing (sub)trees to load"
+    constraints: "Changes require executor restart"
+    read_only: false
+
+  debug:
+    type: bool
+    default_value: false
+    description: "Enables debug mode"
+    constraints: ""
+    read_only: false
+    var_name: debug_
+
+  plugins:
+    type: string_array
+    default_value:
+      - ""
+    description: "List of names of BT.CPP plugins to load"
+    constraints: "Changes require executor restart, must be full plugin names created from dua_btcpp_base"
+    read_only: false

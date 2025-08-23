@@ -30,7 +30,7 @@ namespace dua_btcpp_nodes
 PublishString::PublishString(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
-  const dua_node::NodeBase::SharedPtr & ros2_node,
+  dua_node::NodeBase * ros2_node,
   const dua_btcpp_base::EntityManager::SharedPtr & publishers_cache)
 : BT::SyncActionNode(node_name, node_config),
   ros2_node_(ros2_node),

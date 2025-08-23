@@ -30,7 +30,7 @@ namespace dua_btcpp_nodes
 ArmComponent::ArmComponent(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
-  const dua_node::NodeBase::SharedPtr & ros2_node,
+  dua_node::NodeBase * ros2_node,
   const dua_btcpp_base::EntityManager::SharedPtr & clients_cache,
   bool wait_server,
   bool spin)

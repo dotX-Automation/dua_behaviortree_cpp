@@ -56,7 +56,7 @@ public:
    * @param node ROS 2 node pointer.
    * @throws std::invalid_argument if node pointer is invalid.
    */
-  explicit EntityManager(const dua_node::NodeBase::SharedPtr & node)
+  explicit EntityManager(dua_node::NodeBase * node)
   : node_(node)
   {
     if (!node_) {
@@ -212,7 +212,7 @@ private:
   }
 
   /* Pointer to the node. */
-  dua_node::NodeBase::SharedPtr node_;
+  dua_node::NodeBase * node_;
 
   /* Entities cache. */
   std::map<std::string, std::any> cache_;

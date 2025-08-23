@@ -32,7 +32,7 @@ namespace dua_btcpp_nodes
 SubscriberTrigger::SubscriberTrigger(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
-  const dua_node::NodeBase::SharedPtr & ros2_node)
+  dua_node::NodeBase * ros2_node)
 : BT::StatefulActionNode(node_name, node_config),
   ros2_node_(ros2_node)
 {

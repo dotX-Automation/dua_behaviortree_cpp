@@ -1,0 +1,18 @@
+/btcpp_executor:
+  ros__parameters:
+    autostart: false
+    btcpp:
+      debug:
+        print_statistics: false
+        treenodes_model_path: ''
+      global_blackboard:
+        persistent: false
+      groot2_publisher: false
+      main_tree_name: MainTree
+      tick_rate: 30
+      tree_files:
+        - ''
+    debug: false
+    plugins:
+      - ''
+    use_sim_time: false

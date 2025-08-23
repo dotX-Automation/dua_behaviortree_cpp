@@ -59,7 +59,7 @@ public:
    */
   virtual void register_nodes(
     BT::BehaviorTreeFactory & factory,
-    std::shared_ptr<dua_node::NodeBase> node,
+    dua_node::NodeBase * node,
     std::shared_ptr<dua_btcpp_base::EntityManager> entity_manager,
     bool wait_servers,
     bool spin) = 0;

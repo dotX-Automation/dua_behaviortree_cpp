@@ -59,7 +59,7 @@ public:
   PublishString(
     const std::string & node_name,
     const BT::NodeConfig & node_config,
-    const dua_node::NodeBase::SharedPtr & ros2_node,
+    dua_node::NodeBase * ros2_node,
     const dua_btcpp_base::EntityManager::SharedPtr & publishers_cache);
 
   /**
@@ -81,7 +81,7 @@ public:
 
 private:
   /* Pointer to ROS 2 node. */
-  dua_node::NodeBase::SharedPtr ros2_node_ = nullptr;
+  dua_node::NodeBase * ros2_node_ = nullptr;
 
   /* Pointer to publishers cache. */
   dua_btcpp_base::EntityManager::SharedPtr publishers_cache_ = nullptr;
