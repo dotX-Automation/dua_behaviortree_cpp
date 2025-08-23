@@ -22,16 +22,16 @@
  * limitations under the License.
  */
 
-#include <dua_btcpp/set_component_state.hpp>
+#include <dua_btcpp_nodes/set_component_state.hpp>
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 SetComponentState::SetComponentState(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
   const dua_node::NodeBase::SharedPtr & ros2_node,
-  const EntityManager::SharedPtr & clients_cache,
+  const dua_btcpp_base::EntityManager::SharedPtr & clients_cache,
   bool wait_server,
   bool spin)
 : BT::SyncActionNode(node_name, node_config),
@@ -47,12 +47,12 @@ SetComponentState::SetComponentState(
 
   auto port_it = config().input_ports.find("service_name");
   if (port_it == config().input_ports.end()) {
-    throw std::runtime_error("dua_btcpp::SetComponentState::SetComponentState: Service name not found in input ports.");
+    throw std::runtime_error("dua_btcpp_nodes::SetComponentState::SetComponentState: Service name not found in input ports.");
   }
 
   const std::string & bb_service_name = port_it->second;
   if (bb_service_name.empty()) {
-    throw std::runtime_error("dua_btcpp::SetComponentState::SetComponentState: Service name is empty.");
+    throw std::runtime_error("dua_btcpp_nodes::SetComponentState::SetComponentState: Service name is empty.");
   }
 
   if (!isBlackboardPointer(bb_service_name)) {
@@ -95,4 +95,4 @@ BT::NodeStatus SetComponentState::tick()
   }
 }
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

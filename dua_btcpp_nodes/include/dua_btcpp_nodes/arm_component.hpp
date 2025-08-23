@@ -29,7 +29,7 @@
 
 #include "visibility_control.h"
 
-#include "entity_manager.hpp"
+#include <dua_btcpp_base/entity_manager.hpp>
 
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
@@ -41,13 +41,13 @@ using namespace dua_common_interfaces::msg;
 
 using namespace dua_hardware_interfaces::action;
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 /**
  * Node that arms a component.
  */
-class DUA_BTCPP_PUBLIC ArmComponent : public BT::SyncActionNode
+class DUA_BTCPP_NODES_PUBLIC ArmComponent : public BT::SyncActionNode
 {
 public:
   /**
@@ -65,7 +65,7 @@ public:
     const std::string & node_name,
     const BT::NodeConfig & node_config,
     const dua_node::NodeBase::SharedPtr & ros2_node,
-    const EntityManager::SharedPtr & clients_cache,
+    const dua_btcpp_base::EntityManager::SharedPtr & clients_cache,
     bool wait_server = false,
     bool spin = false);
 
@@ -91,7 +91,7 @@ private:
   dua_node::NodeBase::SharedPtr ros2_node_ = nullptr;
 
   /* Pointer to clients cache. */
-  EntityManager::SharedPtr clients_cache_ = nullptr;
+  dua_btcpp_base::EntityManager::SharedPtr clients_cache_ = nullptr;
 
   /* Pointer to action client. */
   simple_actionclient::Client<Arm>::SharedPtr action_client_ = nullptr;
@@ -103,4 +103,4 @@ private:
   bool spin_ = false;
 };
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

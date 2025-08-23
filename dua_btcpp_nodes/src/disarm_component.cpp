@@ -22,16 +22,16 @@
  * limitations under the License.
  */
 
-#include <dua_btcpp/disarm_component.hpp>
+#include <dua_btcpp_nodes/disarm_component.hpp>
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 DisarmComponent::DisarmComponent(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
   const dua_node::NodeBase::SharedPtr & ros2_node,
-  const EntityManager::SharedPtr & clients_cache,
+  const dua_btcpp_base::EntityManager::SharedPtr & clients_cache,
   bool wait_server,
   bool spin)
 : BT::SyncActionNode(node_name, node_config),
@@ -47,12 +47,12 @@ DisarmComponent::DisarmComponent(
 
   auto port_it = config().input_ports.find("action_name");
   if (port_it == config().input_ports.end()) {
-    throw std::runtime_error("dua_btcpp::DisarmComponent::DisarmComponent: Action name not found in input ports.");
+    throw std::runtime_error("dua_btcpp_nodes::DisarmComponent::DisarmComponent: Action name not found in input ports.");
   }
 
   const std::string & bb_action_name = port_it->second;
   if (bb_action_name.empty()) {
-    throw std::runtime_error("dua_btcpp::DisarmComponent::DisarmComponent: Action name is empty.");
+    throw std::runtime_error("dua_btcpp_nodes::DisarmComponent::DisarmComponent: Action name is empty.");
   }
 
   if (!isBlackboardPointer(bb_action_name)) {
@@ -96,4 +96,4 @@ BT::NodeStatus DisarmComponent::tick()
   }
 }
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

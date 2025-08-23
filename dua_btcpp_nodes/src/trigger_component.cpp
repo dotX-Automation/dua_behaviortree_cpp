@@ -22,16 +22,16 @@
  * limitations under the License.
  */
 
-#include <dua_btcpp/trigger_component.hpp>
+#include <dua_btcpp_nodes/trigger_component.hpp>
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 TriggerComponent::TriggerComponent(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
   const dua_node::NodeBase::SharedPtr & ros2_node,
-  const EntityManager::SharedPtr & clients_cache,
+  const dua_btcpp_base::EntityManager::SharedPtr & clients_cache,
   bool wait_server,
   bool spin)
 : BT::SyncActionNode(node_name, node_config),
@@ -47,12 +47,12 @@ TriggerComponent::TriggerComponent(
 
   auto port_it = config().input_ports.find("service_name");
   if (port_it == config().input_ports.end()) {
-    throw std::runtime_error("dua_btcpp::TriggerComponent::TriggerComponent: Service name not found in input ports.");
+    throw std::runtime_error("dua_btcpp_nodes::TriggerComponent::TriggerComponent: Service name not found in input ports.");
   }
 
   const std::string & bb_service_name = port_it->second;
   if (bb_service_name.empty()) {
-    throw std::runtime_error("dua_btcpp::TriggerComponent::TriggerComponent: Service name is empty.");
+    throw std::runtime_error("dua_btcpp_nodes::TriggerComponent::TriggerComponent: Service name is empty.");
   }
 
   if (!isBlackboardPointer(bb_service_name)) {
@@ -93,4 +93,4 @@ BT::NodeStatus TriggerComponent::tick()
   }
 }
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

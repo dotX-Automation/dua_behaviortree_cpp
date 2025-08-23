@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>dua_btcpp</name>
+  <name>dua_btcpp_nodes</name>
   <version>1.0.0</version>
   <description>Library of BT.CPP nodes for the DUA framework.</description>
   <maintainer email="info@dotxautomation.com">dotX Automation s.r.l.</maintainer>
@@ -9,7 +9,10 @@
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
+  <depend>pluginlib</depend>
+
   <depend>behaviortree_cpp</depend>
+  <depend>dua_btcpp_base</depend>
 
   <depend>rclcpp</depend>
 

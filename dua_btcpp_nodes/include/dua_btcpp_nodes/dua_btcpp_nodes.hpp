@@ -3,7 +3,7 @@
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
- * August 21, 2025
+ * August 23, 2025
  */
 
 /**
@@ -28,7 +28,7 @@
 
 #include "visibility_control.h"
 
-#include "entity_manager.hpp"
+#include <dua_btcpp_base/base_register.hpp>
 
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
@@ -43,25 +43,32 @@
 
 #include "subscriber_trigger.hpp"
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 /**
- * @brief Registers all the nodes in this library to the given factory.
- *
- * @param factory BT.CPP factory to use.
- * @param node Pointer to the ROS 2 node to use.
- * @param entity_manager Pointer to the entity manager to use.
- * @param wait_servers Enables waiting for service/action servers upon client creation.
- * @param spin Enables spinning the ROS 2 node when client nodes call services/actions.
- * @throws std::runtime_error if any node fails to register.
- * @throws std::bad_any_cast if clients instantiation is misconfigured.
+ * Registers BT.CPP nodes based on DUA standard interfaces and functionalities.
  */
-void DUA_BTCPP_PUBLIC register_nodes(
-  BT::BehaviorTreeFactory & factory,
-  std::shared_ptr<dua_node::NodeBase> node,
-  std::shared_ptr<EntityManager> entity_manager,
-  bool wait_servers,
-  bool spin);
+class DUA_BTCPP_NODES_PUBLIC DUARegister : public dua_btcpp_base::BaseRegister
+{
+public:
+  /**
+   * @brief Registers all the nodes in this library to the given factory.
+   *
+   * @param factory BT.CPP factory to use.
+   * @param node Pointer to the ROS 2 node to use.
+   * @param entity_manager Pointer to the entity manager to use.
+   * @param wait_servers Enables waiting for service/action servers upon client creation.
+   * @param spin Enables spinning the ROS 2 node when client nodes call services/actions.
+   * @throws std::runtime_error if any node fails to register.
+   * @throws std::bad_any_cast if clients instantiation is misconfigured.
+   */
+  void register_nodes(
+    BT::BehaviorTreeFactory & factory,
+    std::shared_ptr<dua_node::NodeBase> node,
+    std::shared_ptr<dua_btcpp_base::EntityManager> entity_manager,
+    bool wait_servers,
+    bool spin) override;
+};
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

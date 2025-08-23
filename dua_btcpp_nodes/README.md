@@ -1,4 +1,4 @@
-# dua_btcpp
+# dua_btcpp_nodes
 
 Library of `BT.CPP` nodes for the DUA framework.
 
@@ -23,6 +23,14 @@ The tree nodes provided in this package allow the tree to interact with various 
 ### Topic publishers
 
 - [x] **`PublishString`**: Publishes a string message to a ROS 2 topic.
+
+## Usage
+
+This library can be included in a project and linked against.
+
+Alternatively, it can be loaded as a plugin using `pluginlib`. It inherits from the `dua_btcpp_base::BaseRegister` class.
+
+See [`dua_btcpp_nodes.hpp`](include/dua_btcpp_nodes/dua_btcpp_nodes.hpp) and the `register_nodes()` method for more information on how to initialize this library with `BehaviorTree.CPP` at runtime.
 
 ---
 

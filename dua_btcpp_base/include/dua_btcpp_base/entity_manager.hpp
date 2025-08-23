@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "visibility_control.h"
-
 #include <any>
 #include <map>
 #include <memory>
@@ -36,14 +34,14 @@
 
 #include <dua_node_cpp/dua_node.hpp>
 
-namespace dua_btcpp
+namespace dua_btcpp_base
 {
 
 /**
  * A thread-safe cache for ROS 2 entities, which can be used to retrieve existing entity
  * instances, avoiding duplication of entities that do not require it.
  */
-class DUA_BTCPP_PUBLIC EntityManager
+class EntityManager
 {
 public:
   using SharedPtr = std::shared_ptr<EntityManager>;
@@ -63,7 +61,7 @@ public:
   {
     if (!node_) {
       throw std::invalid_argument(
-          "dua_btcpp::EntityManager::EntityManager: Invalid ROS 2 node pointer.");
+          "dua_btcpp_base:EntityManager::EntityManager: Invalid ROS 2 node pointer.");
     }
   }
 
@@ -201,7 +199,7 @@ private:
       const auto & stored_type = entity_any.type();
       const auto & expected_type = typeid(std::shared_ptr<EntityT>);
       std::string err_msg =
-        "dua_btcpp::EntityManager::extract_typed_entity_ptr: Type mismatch for entity '" +
+        "dua_btcpp_base::EntityManager::extract_typed_entity_ptr: Type mismatch for entity '" +
         entity_name + "'" +
         " (expected: " + expected_type.name() +
         ", got: " + stored_type.name() + ")";
@@ -223,4 +221,4 @@ private:
   std::mutex cache_lock_;
 };
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_base

@@ -1,0 +1,5 @@
+<library path="duaregister">
+  <class type="dua_btcpp_nodes::DUARegister" base_class_type="dua_btcpp_base::BaseRegister">
+    <description>Library of BehaviorTree.CPP nodes for the DUA framework.</description>
+  </class>
+</library>

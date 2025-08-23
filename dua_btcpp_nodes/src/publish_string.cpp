@@ -22,16 +22,16 @@
  * limitations under the License.
  */
 
-#include <dua_btcpp/publish_string.hpp>
+#include <dua_btcpp_nodes/publish_string.hpp>
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 PublishString::PublishString(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
   const dua_node::NodeBase::SharedPtr & ros2_node,
-  const EntityManager::SharedPtr & publishers_cache)
+  const dua_btcpp_base::EntityManager::SharedPtr & publishers_cache)
 : BT::SyncActionNode(node_name, node_config),
   ros2_node_(ros2_node),
   publishers_cache_(publishers_cache)
@@ -43,12 +43,12 @@ PublishString::PublishString(
 
   auto port_it = config().input_ports.find("topic_name");
   if (port_it == config().input_ports.end()) {
-    throw std::runtime_error("dua_btcpp::PublishString::PublishString: Topic name not found in input ports.");
+    throw std::runtime_error("dua_btcpp_nodes::PublishString::PublishString: Topic name not found in input ports.");
   }
 
   const std::string & bb_topic_name = port_it->second;
   if (bb_topic_name.empty()) {
-    throw std::runtime_error("dua_btcpp::PublishString::PublishString: Topic name is empty.");
+    throw std::runtime_error("dua_btcpp_nodes::PublishString::PublishString: Topic name is empty.");
   }
 
   if (!isBlackboardPointer(bb_topic_name)) {
@@ -96,4 +96,4 @@ BT::NodeStatus PublishString::tick()
   return BT::NodeStatus::SUCCESS;
 }
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

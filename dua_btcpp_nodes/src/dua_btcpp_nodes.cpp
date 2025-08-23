@@ -3,7 +3,7 @@
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
- * August 21, 2025
+ * August 23, 2025
  */
 
 /**
@@ -22,15 +22,15 @@
  * limitations under the License.
  */
 
-#include <dua_btcpp/dua_btcpp.hpp>
+#include <dua_btcpp_nodes/dua_btcpp_nodes.hpp>
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
-void register_nodes(
+void DUARegister::register_nodes(
   BT::BehaviorTreeFactory & factory,
   std::shared_ptr<dua_node::NodeBase> node,
-  std::shared_ptr<EntityManager> entity_manager,
+  std::shared_ptr<dua_btcpp_base::EntityManager> entity_manager,
   bool wait_servers,
   bool spin)
 {
@@ -49,4 +49,7 @@ void register_nodes(
   factory.registerNodeType<PublishString>("PublishString", node, entity_manager);
 }
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes
+
+#include <pluginlib/class_list_macros.hpp>
+PLUGINLIB_EXPORT_CLASS(dua_btcpp_nodes::DUARegister, dua_btcpp_base::BaseRegister)

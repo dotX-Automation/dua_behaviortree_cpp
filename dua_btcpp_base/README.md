@@ -1,6 +1,8 @@
-# dua_btcpp_extender
+# dua_btcpp_base
 
-Base package for extending the `dua_btcpp` library, adding more custom BT.CPP nodes to the `btcpp_executor`.
+Base package for extending the `BT.CPP` library adding more custom nodes.
+
+Integrated with the `btcpp_executor`.
 
 Based on [`pluginlib`](https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Pluginlib.html).
 

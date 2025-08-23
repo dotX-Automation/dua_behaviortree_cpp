@@ -1,5 +1,5 @@
 /**
- * Waits for a trigger message.
+ * Publishes a string on a given topic.
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
@@ -29,22 +29,22 @@
 
 #include "visibility_control.h"
 
+#include <dua_btcpp_base/entity_manager.hpp>
+
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
 
-#include <dua_node_cpp/dua_node.hpp>
-
-#include <std_msgs/msg/empty.hpp>
+#include <std_msgs/msg/string.hpp>
 
 using namespace std_msgs::msg;
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 /**
- * Node that waits for a trigger message.
+ * Node that publishes a string on a given topic.
  */
-class DUA_BTCPP_PUBLIC SubscriberTrigger : public BT::StatefulActionNode
+class DUA_BTCPP_NODES_PUBLIC PublishString : public BT::SyncActionNode
 {
 public:
   /**
@@ -53,17 +53,19 @@ public:
    * @param node_name Name of the node.
    * @param node_config Node configuration options.
    * @param ros2_node Pointer to the ROS 2 node.
+   * @param publishers_cache Pointer to the publishers cache.
    * @throws std::runtime_error if the topic name has not been correctly specified.
    */
-  SubscriberTrigger(
+  PublishString(
     const std::string & node_name,
     const BT::NodeConfig & node_config,
-    const dua_node::NodeBase::SharedPtr & ros2_node);
+    const dua_node::NodeBase::SharedPtr & ros2_node,
+    const dua_btcpp_base::EntityManager::SharedPtr & publishers_cache);
 
   /**
    * @brief Destructor.
    */
-  ~SubscriberTrigger();
+  ~PublishString();
 
   /**
    * @brief Returns the list of ports used by this node.
@@ -73,35 +75,19 @@ public:
   static BT::PortsList providedPorts();
 
   /**
-   * @brief Runs at the start of the action.
+   * @brief Performs the node operation.
    */
-  BT::NodeStatus onStart() override;
-
-  /**
-   * @brief Runs during the action.
-   */
-  BT::NodeStatus onRunning() override;
-
-  /**
-   * @brief Executed when the action is stopped.
-   */
-  void onHalted() override;
+  BT::NodeStatus tick() override;
 
 private:
   /* Pointer to ROS 2 node. */
   dua_node::NodeBase::SharedPtr ros2_node_ = nullptr;
 
-  /* Pointer to topic subscriber. */
-  rclcpp::Subscription<Empty>::SharedPtr subscriber_ = nullptr;
+  /* Pointer to publishers cache. */
+  dua_btcpp_base::EntityManager::SharedPtr publishers_cache_ = nullptr;
 
-  /* Message received flag. */
-  bool trigger_ = false;
-
-  /* ROS 2 topic callback. */
-  void trigger_clbk(const Empty::SharedPtr msg);
-
-  /* ROS 2 topic callback group. */
-  rclcpp::CallbackGroup::SharedPtr cgroup_ = nullptr;
+  /* Pointer to topic publisher. */
+  rclcpp::Publisher<String>::SharedPtr publisher_ = nullptr;
 };
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(dua_btcpp_extender)
+project(dua_btcpp_base)
 
 set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 
@@ -10,8 +10,6 @@ endif()
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
-find_package(dua_btcpp REQUIRED)
-find_package(pluginlib REQUIRED)
 
 # Install headers
 install(DIRECTORY include/
@@ -32,8 +30,6 @@ endif()
 ament_export_include_directories(include)
 ament_export_dependencies(
   behaviortree_cpp
-  dua_btcpp
-  pluiginlib
 )
 
 ament_package()

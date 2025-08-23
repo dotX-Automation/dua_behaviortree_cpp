@@ -1,5 +1,5 @@
 /**
- * Triggers a component.
+ * Waits for a trigger message.
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
@@ -29,22 +29,22 @@
 
 #include "visibility_control.h"
 
-#include "entity_manager.hpp"
-
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
 
-#include <std_srvs/srv/trigger.hpp>
+#include <dua_node_cpp/dua_node.hpp>
 
-using namespace std_srvs::srv;
+#include <std_msgs/msg/empty.hpp>
 
-namespace dua_btcpp
+using namespace std_msgs::msg;
+
+namespace dua_btcpp_nodes
 {
 
 /**
- * Node that triggers a component.
+ * Node that waits for a trigger message.
  */
-class DUA_BTCPP_PUBLIC TriggerComponent : public BT::SyncActionNode
+class DUA_BTCPP_NODES_PUBLIC SubscriberTrigger : public BT::StatefulActionNode
 {
 public:
   /**
@@ -53,23 +53,17 @@ public:
    * @param node_name Name of the node.
    * @param node_config Node configuration options.
    * @param ros2_node Pointer to the ROS 2 node.
-   * @param clients_cache Pointer to the clients cache.
-   * @param wait_server Wait for server to come up upon creation of the client.
-   * @param spin Whether to spin the ROS 2 node when this node calls the service.
-   * @throws std::runtime_error if the service name has not been correctly specified.
+   * @throws std::runtime_error if the topic name has not been correctly specified.
    */
-  TriggerComponent(
+  SubscriberTrigger(
     const std::string & node_name,
     const BT::NodeConfig & node_config,
-    const dua_node::NodeBase::SharedPtr & ros2_node,
-    const EntityManager::SharedPtr & clients_cache,
-    bool wait_server = false,
-    bool spin = false);
+    const dua_node::NodeBase::SharedPtr & ros2_node);
 
   /**
    * @brief Destructor.
    */
-  ~TriggerComponent();
+  ~SubscriberTrigger();
 
   /**
    * @brief Returns the list of ports used by this node.
@@ -79,25 +73,35 @@ public:
   static BT::PortsList providedPorts();
 
   /**
-   * @brief Performs the node operation.
+   * @brief Runs at the start of the action.
    */
-  BT::NodeStatus tick() override;
+  BT::NodeStatus onStart() override;
+
+  /**
+   * @brief Runs during the action.
+   */
+  BT::NodeStatus onRunning() override;
+
+  /**
+   * @brief Executed when the action is stopped.
+   */
+  void onHalted() override;
 
 private:
   /* Pointer to ROS 2 node. */
   dua_node::NodeBase::SharedPtr ros2_node_ = nullptr;
 
-  /* Pointer to clients cache. */
-  EntityManager::SharedPtr clients_cache_ = nullptr;
+  /* Pointer to topic subscriber. */
+  rclcpp::Subscription<Empty>::SharedPtr subscriber_ = nullptr;
 
-  /* Pointer to service client. */
-  simple_serviceclient::Client<Trigger>::SharedPtr service_client_ = nullptr;
+  /* Message received flag. */
+  bool trigger_ = false;
 
-  /* Wait for server to come up upon creation of the client. */
-  bool wait_server_ = true;
+  /* ROS 2 topic callback. */
+  void trigger_clbk(const Empty::SharedPtr msg);
 
-  /* Spin the ROS 2 node when this node acts. */
-  bool spin_ = false;
+  /* ROS 2 topic callback group. */
+  rclcpp::CallbackGroup::SharedPtr cgroup_ = nullptr;
 };
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

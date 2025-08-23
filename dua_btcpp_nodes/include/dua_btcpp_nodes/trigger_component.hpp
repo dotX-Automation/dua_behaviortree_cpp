@@ -1,5 +1,5 @@
 /**
- * Publishes a string on a given topic.
+ * Triggers a component.
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
@@ -29,22 +29,22 @@
 
 #include "visibility_control.h"
 
-#include "entity_manager.hpp"
+#include <dua_btcpp_base/entity_manager.hpp>
 
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
 
-#include <std_msgs/msg/string.hpp>
+#include <std_srvs/srv/trigger.hpp>
 
-using namespace std_msgs::msg;
+using namespace std_srvs::srv;
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 /**
- * Node that publishes a string on a given topic.
+ * Node that triggers a component.
  */
-class DUA_BTCPP_PUBLIC PublishString : public BT::SyncActionNode
+class DUA_BTCPP_NODES_PUBLIC TriggerComponent : public BT::SyncActionNode
 {
 public:
   /**
@@ -53,19 +53,23 @@ public:
    * @param node_name Name of the node.
    * @param node_config Node configuration options.
    * @param ros2_node Pointer to the ROS 2 node.
-   * @param publishers_cache Pointer to the publishers cache.
-   * @throws std::runtime_error if the topic name has not been correctly specified.
+   * @param clients_cache Pointer to the clients cache.
+   * @param wait_server Wait for server to come up upon creation of the client.
+   * @param spin Whether to spin the ROS 2 node when this node calls the service.
+   * @throws std::runtime_error if the service name has not been correctly specified.
    */
-  PublishString(
+  TriggerComponent(
     const std::string & node_name,
     const BT::NodeConfig & node_config,
     const dua_node::NodeBase::SharedPtr & ros2_node,
-    const EntityManager::SharedPtr & publishers_cache);
+    const dua_btcpp_base::EntityManager::SharedPtr & clients_cache,
+    bool wait_server = false,
+    bool spin = false);
 
   /**
    * @brief Destructor.
    */
-  ~PublishString();
+  ~TriggerComponent();
 
   /**
    * @brief Returns the list of ports used by this node.
@@ -83,11 +87,17 @@ private:
   /* Pointer to ROS 2 node. */
   dua_node::NodeBase::SharedPtr ros2_node_ = nullptr;
 
-  /* Pointer to publishers cache. */
-  EntityManager::SharedPtr publishers_cache_ = nullptr;
+  /* Pointer to clients cache. */
+  dua_btcpp_base::EntityManager::SharedPtr clients_cache_ = nullptr;
 
-  /* Pointer to topic publisher. */
-  rclcpp::Publisher<String>::SharedPtr publisher_ = nullptr;
+  /* Pointer to service client. */
+  simple_serviceclient::Client<Trigger>::SharedPtr service_client_ = nullptr;
+
+  /* Wait for server to come up upon creation of the client. */
+  bool wait_server_ = true;
+
+  /* Spin the ROS 2 node when this node acts. */
+  bool spin_ = false;
 };
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

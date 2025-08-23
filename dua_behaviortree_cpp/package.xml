@@ -9,8 +9,8 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>dua_btcpp</depend>
-  <depend>dua_btcpp_extender</depend>
+  <depend>dua_btcpp_base</depend>
+  <depend>dua_btcpp_nodes</depend>
   <depend>btcpp_executor</depend>
 
   <export>

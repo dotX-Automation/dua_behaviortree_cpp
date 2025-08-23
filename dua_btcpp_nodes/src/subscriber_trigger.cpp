@@ -24,9 +24,9 @@
 
 #define UNUSED(arg) (void)(arg)
 
-#include <dua_btcpp/subscriber_trigger.hpp>
+#include <dua_btcpp_nodes/subscriber_trigger.hpp>
 
-namespace dua_btcpp
+namespace dua_btcpp_nodes
 {
 
 SubscriberTrigger::SubscriberTrigger(
@@ -43,12 +43,12 @@ SubscriberTrigger::SubscriberTrigger(
 
   auto port_it = config().input_ports.find("topic_name");
   if (port_it == config().input_ports.end()) {
-    throw std::runtime_error("dua_btcpp::SubscriberTrigger::SubscriberTrigger: Topic name not found in input ports.");
+    throw std::runtime_error("dua_btcpp_nodes::SubscriberTrigger::SubscriberTrigger: Topic name not found in input ports.");
   }
 
   const std::string & bb_topic_name = port_it->second;
   if (bb_topic_name.empty()) {
-    throw std::runtime_error("dua_btcpp::SubscriberTrigger::SubscriberTrigger: Topic name is empty.");
+    throw std::runtime_error("dua_btcpp_nodes::SubscriberTrigger::SubscriberTrigger: Topic name is empty.");
   }
 
   if (!isBlackboardPointer(bb_topic_name)) {
@@ -133,4 +133,4 @@ void SubscriberTrigger::trigger_clbk(const Empty::SharedPtr msg)
   trigger_ = true;
 }
 
-} // namespace dua_btcpp
+} // namespace dua_btcpp_nodes

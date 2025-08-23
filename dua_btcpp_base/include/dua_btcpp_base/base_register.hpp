@@ -1,9 +1,9 @@
 /**
- * Extender base class to add more custom BT.CPP nodes to the btcpp_executor.
+ * Base plugin class to load custom BT.CPP nodes with the btcpp_executor.
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
- * August 22, 2025
+ * August 23, 2025
  */
 
 /**
@@ -26,24 +26,25 @@
 
 #include <memory>
 
-#include <dua_btcpp/entity_manager.hpp>
+#include "entity_manager.hpp"
 
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
 
-namespace dua_btcpp_extender
+namespace dua_btcpp_base
 {
 
 /**
- * Allows to add more custom BT.CPP nodes.
+ * Registers custom BT.CPP nodes.
  */
-class ExtenderBase
+class BaseRegister
 {
 public:
   /**
    * @brief Destructor.
    */
-  virtual ~ExtenderBase() {}
+  virtual ~BaseRegister()
+  {}
 
   /**
    * @brief Registers custom nodes with the BehaviorTreeFactory (to be overridden).
@@ -59,7 +60,7 @@ public:
   virtual void register_nodes(
     BT::BehaviorTreeFactory & factory,
     std::shared_ptr<dua_node::NodeBase> node,
-    std::shared_ptr<dua_btcpp::EntityManager> entity_manager,
+    std::shared_ptr<dua_btcpp_base::EntityManager> entity_manager,
     bool wait_servers,
     bool spin) = 0;
 
@@ -67,8 +68,8 @@ protected:
   /**
    * @brief Constructor, required by pluginlib to be protected and noop.
    */
-  ExtenderBase()
+  BaseRegister()
   {}
 };
 
-} // namespace dua_btcpp_extender
+} // namespace dua_btcpp_base
