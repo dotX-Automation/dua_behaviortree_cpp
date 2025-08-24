@@ -37,6 +37,7 @@ void BTExecutor::bt_executor_routine()
   while (true) {
     // Check if cancellation was requested
     if (!running_.load(std::memory_order_acquire)) {
+      bt_->haltTree();
       break;
     }
 
@@ -68,13 +69,15 @@ void BTExecutor::bt_executor_routine()
   }
 
   if (status == BT::NodeStatus::SUCCESS) {
-    RCLCPP_WARN(get_logger(), "BT executor stopped: SUCCESS");
+    RCLCPP_WARN(get_logger(), "BT execution succeeded");
+  } else if (status == BT::NodeStatus::RUNNING) {
+    RCLCPP_WARN(get_logger(), "BT execution halted");
   } else if (status == BT::NodeStatus::FAILURE) {
-    RCLCPP_ERROR(get_logger(), "BT executor stopped: FAILURE");
+    RCLCPP_ERROR(get_logger(), "BT execution failed");
   } else {
     RCLCPP_FATAL(
       get_logger(),
-      "BT executor stopped: unknown status: %s",
+      "BT execution stopped with status %s",
       node_status_to_string(status).c_str());
   }
 
