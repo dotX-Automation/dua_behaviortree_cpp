@@ -69,8 +69,8 @@ SetComponentState::~SetComponentState()
 BT::PortsList SetComponentState::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("service_name", "Name of the ROS 2 SetBool service."),
-    BT::InputPort<bool>("state", "Component state to set.")
+    BT::InputPort<std::string>("service_name", "Name of the ROS 2 SetBool service"),
+    BT::InputPort<bool>("state", "Component state to set")
   };
 }
 

@@ -30,6 +30,7 @@ find_package(dua_mission_interfaces REQUIRED)
 find_package(dua_node_cpp REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 
@@ -56,6 +57,7 @@ ament_target_dependencies(dua_btcpp_nodes
   dua_node_cpp
   pluginlib
   rclcpp
+  rclcpp_action
   std_msgs
   std_srvs
 )
@@ -102,6 +104,7 @@ ament_export_dependencies(
   dua_node_cpp
   pluginlib
   rclcpp
+  rclcpp_action
   std_msgs
   std_srvs
 )

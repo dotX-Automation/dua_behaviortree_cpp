@@ -69,7 +69,7 @@ TriggerComponent::~TriggerComponent()
 BT::PortsList TriggerComponent::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("service_name", "Name of the ROS 2 Trigger service.")
+    BT::InputPort<std::string>("service_name", "Name of the ROS 2 Trigger service")
   };
 }
 

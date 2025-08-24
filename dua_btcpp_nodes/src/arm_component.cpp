@@ -69,7 +69,7 @@ ArmComponent::~ArmComponent()
 BT::PortsList ArmComponent::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Arm action.")
+    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Arm action")
   };
 }
 

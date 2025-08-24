@@ -69,7 +69,7 @@ DisarmComponent::~DisarmComponent()
 BT::PortsList DisarmComponent::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Disarm action.")
+    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Disarm action")
   };
 }
 

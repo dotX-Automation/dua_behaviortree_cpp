@@ -65,9 +65,9 @@ PublishString::~PublishString()
 BT::PortsList PublishString::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("topic_name", "Name of the ROS 2 topic to publish to."),
-    BT::InputPort<std::string>("message", "Message string to publish."),
-    BT::InputPort<bool>("ros_log", "Enables rclcpp logging of the message upon publishing.")
+    BT::InputPort<std::string>("topic_name", "Name of the ROS 2 topic to publish to"),
+    BT::InputPort<std::string>("message", "Message string to publish"),
+    BT::InputPort<bool>("ros_log", "Enables rclcpp logging of the message upon publishing")
   };
 }
 

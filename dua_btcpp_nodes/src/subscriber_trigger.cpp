@@ -73,8 +73,8 @@ SubscriberTrigger::~SubscriberTrigger()
 BT::PortsList SubscriberTrigger::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("topic_name", "Name of the ROS 2 topic to subscribe to."),
-    BT::InputPort<bool>("reset", false, "Whether to reset the trigger state after it is received.")
+    BT::InputPort<std::string>("topic_name", "Name of the ROS 2 topic to subscribe to"),
+    BT::InputPort<bool>("reset", false, "Whether to reset the trigger state after it is received")
   };
 }
 

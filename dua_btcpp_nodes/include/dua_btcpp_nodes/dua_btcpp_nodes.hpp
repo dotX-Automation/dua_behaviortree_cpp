@@ -35,6 +35,7 @@
 
 #include "arm_component.hpp"
 #include "disarm_component.hpp"
+#include "navigate.hpp"
 
 #include "trigger_component.hpp"
 #include "set_component_state.hpp"

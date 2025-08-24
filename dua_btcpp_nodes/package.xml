@@ -16,6 +16,7 @@
   <depend>dua_btcpp_types</depend>
 
   <depend>rclcpp</depend>
+  <depend>rclcpp_action</depend>
 
   <depend>dua_aircraft_interfaces</depend>
   <depend>dua_common_interfaces</depend>
