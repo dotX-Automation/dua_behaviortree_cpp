@@ -67,11 +67,10 @@ install(
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include)
+  RUNTIME DESTINATION bin)
 
 # Export plugin
-pluginlib_export_plugin_description_file(dua_btcpp_nodes plugins.xml)
+pluginlib_export_plugin_description_file(dua_btcpp_base plugins.xml)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
