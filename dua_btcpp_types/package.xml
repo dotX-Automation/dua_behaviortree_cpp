@@ -1,25 +1,15 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>btcpp_executor</name>
+  <name>dua_btcpp_types</name>
   <version>1.0.0</version>
-  <description>ROS 2 node acting as BehaviorTree.CPP behavior trees executor.</description>
+  <description>Definition of custom data types for BT.CPP integration in DUA.</description>
   <maintainer email="info@dotxautomation.com">dotX Automation s.r.l.</maintainer>
   <license>Apache-2.0</license>
 
-  <buildtool_depend>ament_cmake_ros</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>behaviortree_cpp</depend>
-  <depend>dua_app_management</depend>
-  <depend>dua_btcpp_base</depend>
-  <depend>dua_btcpp_types</depend>
-  <depend>dua_node_cpp</depend>
-  <depend>dua_qos_cpp</depend>
-  <depend>params_manager_cpp</depend>
-  <depend>pluginlib</depend>
-  <depend>rclcpp</depend>
-  <depend>rclcpp_components</depend>
-  <depend>std_srvs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

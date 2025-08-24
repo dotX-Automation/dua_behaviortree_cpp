@@ -23,6 +23,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(behaviortree_cpp REQUIRED)
 find_package(dua_app_management REQUIRED)
 find_package(dua_btcpp_base REQUIRED)
+find_package(dua_btcpp_types REQUIRED)
 find_package(dua_node_cpp REQUIRED)
 find_package(dua_qos_cpp REQUIRED)
 find_package(params_manager_cpp REQUIRED)
@@ -57,6 +58,7 @@ ament_target_dependencies(btcpp_executor
   behaviortree_cpp
   dua_app_management
   dua_btcpp_base
+  dua_btcpp_types
   dua_node_cpp
   dua_qos_cpp
   params_manager_cpp

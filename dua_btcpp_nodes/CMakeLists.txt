@@ -22,6 +22,7 @@ find_package(ament_cmake REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
 find_package(dua_aircraft_interfaces REQUIRED)
 find_package(dua_btcpp_base REQUIRED)
+find_package(dua_btcpp_types REQUIRED)
 find_package(dua_common_interfaces REQUIRED)
 find_package(dua_hardware_interfaces REQUIRED)
 find_package(dua_movement_interfaces REQUIRED)
@@ -47,6 +48,7 @@ ament_target_dependencies(dua_btcpp_nodes
   behaviortree_cpp
   dua_aircraft_interfaces
   dua_btcpp_base
+  dua_btcpp_types
   dua_common_interfaces
   dua_hardware_interfaces
   dua_movement_interfaces
@@ -92,6 +94,7 @@ ament_export_dependencies(
   behaviortree_cpp
   dua_aircraft_interfaces
   dua_btcpp_base
+  dua_btcpp_types
   dua_common_interfaces
   dua_hardware_interfaces
   dua_movement_interfaces

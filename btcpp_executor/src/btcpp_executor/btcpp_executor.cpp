@@ -22,6 +22,8 @@
 
 #include <btcpp_executor/btcpp_executor.hpp>
 
+#include <dua_btcpp_types/point_3d.hpp>
+
 namespace btcpp_executor
 {
 
@@ -37,6 +39,9 @@ BTExecutor::BTExecutor(const rclcpp::NodeOptions & opts)
 
   // Create entities cache
   entity_manager_ = std::make_shared<dua_btcpp_base::EntityManager>(this);
+
+  // Register JSON definitions of BT.CPP custom types
+  BT::RegisterJsonDefinition<dua_btcpp_types::Point3D>();
 
   RCLCPP_INFO(get_logger(), "Node initialized");
 
