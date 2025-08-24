@@ -140,6 +140,7 @@ bool BTExecutor::start_bt_executor()
     plugins_list_.clear();
     return false;
   }
+  RCLCPP_INFO(get_logger(), "[BT.CPP TREE] %s", main_tree_name.c_str());
 
   // Perform debugging operations
   if (debug_) {
@@ -152,9 +153,10 @@ bool BTExecutor::start_bt_executor()
     global_blackboard_->debugMessage();
 
     // Write TreeNodesModel to file
-    std::string model_xml_path = get_parameter("btcpp.debug.treenodes_model_path").as_string();
+    std::string model_xml_path = get_parameter("btcpp.debug.treenodes_model.path").as_string();
+    bool include_builtins = get_parameter("btcpp.debug.treenodes_model.builtins").as_bool();
     if (!model_xml_path.empty()) {
-      std::string model_xml = BT::writeTreeNodesModelXML(*bt_factory_);
+      std::string model_xml = BT::writeTreeNodesModelXML(*bt_factory_, include_builtins);
       std::ofstream out_file(model_xml_path);
       out_file << model_xml;
     }
@@ -165,10 +167,15 @@ bool BTExecutor::start_bt_executor()
 
   // Connect to Groot2
   if (get_parameter("btcpp.groot2_publisher").as_bool()) {
+    // Reset the publisher first to delete old instances
+    groot2_publisher_.reset();
     groot2_publisher_ = std::make_unique<BT::Groot2Publisher>(*bt_);
   }
 
   // Start executor
+  if (bt_executor_.joinable()) {
+    bt_executor_.join();
+  }
   running_.store(true, std::memory_order_release);
   bt_executor_ = std::thread(&BTExecutor::bt_executor_routine, this);
 
@@ -189,6 +196,24 @@ void BTExecutor::delete_global_blackboard()
     return;
   }
   global_blackboard_.reset();
+}
+
+std::string BTExecutor::node_status_to_string(const BT::NodeStatus & status)
+{
+  switch (status) {
+    case BT::NodeStatus::IDLE:
+      return "IDLE";
+    case BT::NodeStatus::RUNNING:
+      return "RUNNING";
+    case BT::NodeStatus::SUCCESS:
+      return "SUCCESS";
+    case BT::NodeStatus::FAILURE:
+      return "FAILURE";
+    case BT::NodeStatus::SKIPPED:
+      return "SKIPPED";
+    default:
+      return "UNKNOWN";
+  }
 }
 
 } // namespace btcpp_executor

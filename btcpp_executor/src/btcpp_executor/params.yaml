@@ -39,7 +39,14 @@ params:
     constraints: "Requires debug=true, changes require executor restart"
     read_only: false
 
-  btcpp.debug.treenodes_model_path:
+  btcpp.debug.treenodes_model.builtins:
+    type: bool
+    default_value: false
+    description: "If true, includes built-in nodes in the TreeNodesModel"
+    constraints: "Requires debug=true, changes require executor restart"
+    read_only: false
+
+  btcpp.debug.treenodes_model.path:
     type: string
     default_value: ""
     description: "Path to the XML file where the TreeNodesModel will be written, if not empty"

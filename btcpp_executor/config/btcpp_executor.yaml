@@ -4,7 +4,9 @@
     btcpp:
       debug:
         print_statistics: false
-        treenodes_model_path: ''
+        treenodes_model:
+          builtins: false
+          path: ''
       global_blackboard:
         persistent: false
       groot2_publisher: false

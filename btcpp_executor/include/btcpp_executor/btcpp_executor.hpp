@@ -23,6 +23,8 @@
 #pragma once
 
 #include <atomic>
+#include <chrono>
+#include <cmath>
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -30,6 +32,7 @@
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <vector>
 
 #include <behaviortree_cpp/behavior_tree.h>
@@ -116,6 +119,12 @@ private:
    */
   void delete_global_blackboard();
 
+  /**
+   * @brief Converts a NodeStatus value into a printable string.
+   */
+  std::string node_status_to_string(const BT::NodeStatus & status);
+
+  /* Node status members. */
   /* BT executor thread. */
   std::thread bt_executor_;
 
