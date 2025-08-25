@@ -123,15 +123,16 @@ BT::NodeStatus NavigateNode::onStart()
 
 BT::NodeStatus NavigateNode::onRunning()
 {
-  // Check if the goal has been completed
   int timeout_ms = getInput<int>("timeout").value();
+  if (timeout_ms <= 0) {
+    // Poll instantaneously
+    timeout_ms = 10;
+  }
+
+  // Check if the goal has been completed
   rclcpp_action::ClientGoalHandle<Navigate>::WrappedResult goal_result;
   if (!spin_) {
     // Have to manually check the future
-    if (timeout_ms <= 0) {
-      // Poll instantaneously
-      timeout_ms = 1;
-    }
     auto f_status = current_res_future_.wait_for(std::chrono::milliseconds(timeout_ms));
     if (f_status == std::future_status::ready) {
       goal_result = current_res_future_.get();
@@ -140,9 +141,12 @@ BT::NodeStatus NavigateNode::onRunning()
     }
   } else {
     // Have to spin, use the API
-    auto res_ptr = action_client_->get_result_sync(current_goal_, true, timeout_ms);
-    if (res_ptr != nullptr) {
-      goal_result = *res_ptr;
+    auto err = rclcpp::spin_until_future_complete(
+      ros2_node_->shared_from_this(),
+      current_res_future_,
+      std::chrono::milliseconds(timeout_ms));
+    if (err == rclcpp::FutureReturnCode::SUCCESS) {
+      goal_result = current_res_future_.get();
     } else {
       return BT::NodeStatus::RUNNING;
     }

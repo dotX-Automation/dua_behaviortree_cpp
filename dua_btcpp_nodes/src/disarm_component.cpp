@@ -69,7 +69,8 @@ DisarmComponent::~DisarmComponent()
 BT::PortsList DisarmComponent::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Disarm action")
+    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Disarm action"),
+    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)")
   };
 }
 
@@ -82,8 +83,9 @@ BT::NodeStatus DisarmComponent::tick()
   }
 
   // Try to disarm the component
+  int timeout_ms = getInput<int>("timeout").value();
   Disarm::Goal disarm_goal{};
-  auto disarm_res = action_client_->call_sync(disarm_goal, spin_);
+  auto disarm_res = action_client_->call_sync(disarm_goal, spin_, false, timeout_ms, timeout_ms);
   bool success = std::get<0>(disarm_res) &&
     (std::get<1>(disarm_res) == rclcpp_action::ResultCode::SUCCEEDED ||
      std::get<1>(disarm_res) == rclcpp_action::ResultCode::UNKNOWN) &&

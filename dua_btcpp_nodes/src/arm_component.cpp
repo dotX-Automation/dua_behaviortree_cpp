@@ -69,7 +69,8 @@ ArmComponent::~ArmComponent()
 BT::PortsList ArmComponent::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Arm action")
+    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Arm action"),
+    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)")
   };
 }
 
@@ -82,8 +83,9 @@ BT::NodeStatus ArmComponent::tick()
   }
 
   // Try to arm the component
+  int timeout_ms = getInput<int>("timeout").value();
   Arm::Goal arm_goal{};
-  auto arm_res = action_client_->call_sync(arm_goal, spin_);
+  auto arm_res = action_client_->call_sync(arm_goal, spin_, false, timeout_ms, timeout_ms);
   bool success = std::get<0>(arm_res) &&
     (std::get<1>(arm_res) == rclcpp_action::ResultCode::SUCCEEDED ||
      std::get<1>(arm_res) == rclcpp_action::ResultCode::UNKNOWN) &&
