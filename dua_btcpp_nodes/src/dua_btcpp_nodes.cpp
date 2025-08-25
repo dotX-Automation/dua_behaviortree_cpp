@@ -38,6 +38,8 @@ void DUARegister::register_nodes(
   factory.registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<NavigateNode>("Navigate", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<VerticalLandingNode>("VerticalLanding", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<VerticalTakeoffNode>("VerticalTakeoff", node, entity_manager, wait_servers, spin);
 
   // Service clients
   factory.registerNodeType<TriggerComponent>("TriggerComponent", node, entity_manager, wait_servers, spin);
