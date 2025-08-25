@@ -86,3 +86,11 @@ params:
     description: "List of names of BT.CPP plugins to load"
     constraints: "Changes require executor restart, must be full plugin names created from dua_btcpp_base"
     read_only: false
+
+  wait_servers:
+    type: bool
+    default_value: true
+    description: "Waits for service/action servers to come online upon clients creation (in nodes)"
+    constraints: "Changes require executor restart"
+    read_only: false
+    var_name: wait_servers_

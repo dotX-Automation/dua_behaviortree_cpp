@@ -18,3 +18,4 @@
     plugins:
       - ''
     use_sim_time: false
+    wait_servers: true

@@ -68,7 +68,7 @@ bool BTExecutor::start_bt_executor()
         *bt_factory_,
         this,
         entity_manager_,
-        !debug_,
+        wait_servers_,
         false);
     } catch (const std::exception & e) {
       RCLCPP_FATAL(

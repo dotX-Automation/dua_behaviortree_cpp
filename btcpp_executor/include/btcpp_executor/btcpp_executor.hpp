@@ -171,6 +171,7 @@ private:
   /* Node parameters. */
   bool debug_ = false;
   bool global_bb_persistent_ = false;
+  bool wait_servers_ = false;
 };
 
 } // namespace btcpp_executor
