@@ -59,6 +59,11 @@ BTExecutor::~BTExecutor()
   }
 }
 
+void BTExecutor::init_cgroups()
+{
+  enable_cgroup_ = dua_create_exclusive_cgroup();
+}
+
 void BTExecutor::init_service_servers()
 {
   // enable
@@ -68,7 +73,8 @@ void BTExecutor::init_service_servers()
       &BTExecutor::enable_clbk,
       this,
       std::placeholders::_1,
-      std::placeholders::_2));
+      std::placeholders::_2),
+    enable_cgroup_);
 }
 
 } // namespace btcpp_executor

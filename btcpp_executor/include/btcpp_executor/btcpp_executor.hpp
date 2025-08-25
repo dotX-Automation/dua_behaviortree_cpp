@@ -85,9 +85,17 @@ private:
   void init_parameters() override;
 
   /**
+   * @brief Initializes callback groups.
+   */
+  void init_cgroups() override;
+
+  /**
    * @brief Initializes service servers.
    */
   void init_service_servers() override;
+
+  /* Service callback groups. */
+  rclcpp::CallbackGroup::SharedPtr enable_cgroup_;
 
   /* Service servers. */
   rclcpp::Service<SetBool>::SharedPtr enable_server_;
