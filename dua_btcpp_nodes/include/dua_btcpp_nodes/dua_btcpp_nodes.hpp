@@ -37,6 +37,7 @@
 #include "disarm_component.hpp"
 #include "navigate.hpp"
 #include "vertical_landing.hpp"
+#include "vertical_safe_landing.hpp"
 #include "vertical_takeoff.hpp"
 
 #include "trigger_component.hpp"

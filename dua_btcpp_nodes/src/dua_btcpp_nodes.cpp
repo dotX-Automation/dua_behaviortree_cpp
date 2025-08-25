@@ -39,6 +39,7 @@ void DUARegister::register_nodes(
   factory.registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<NavigateNode>("Navigate", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<VerticalLandingNode>("VerticalLanding", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<VerticalSafeLandingNode>("VerticalSafeLanding", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<VerticalTakeoffNode>("VerticalTakeoff", node, entity_manager, wait_servers, spin);
 
   // Service clients
@@ -50,6 +51,9 @@ void DUARegister::register_nodes(
 
   // Topic publishers
   factory.registerNodeType<PublishString>("PublishString", node, entity_manager);
+
+  // Scripting enum types
+  factory.registerScriptingEnums<dua_btcpp_nodes::SafeLandingPolicy>();
 }
 
 } // namespace dua_btcpp_nodes
