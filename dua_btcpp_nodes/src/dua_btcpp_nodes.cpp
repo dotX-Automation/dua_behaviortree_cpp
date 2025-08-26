@@ -38,6 +38,7 @@ void DUARegister::register_nodes(
   factory.registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<NavigateNode>("Navigate", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<TrackNode>("Track", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<VerticalLandingNode>("VerticalLanding", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<VerticalSafeLandingNode>("VerticalSafeLanding", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<VerticalTakeoffNode>("VerticalTakeoff", node, entity_manager, wait_servers, spin);
@@ -54,6 +55,7 @@ void DUARegister::register_nodes(
 
   // Scripting enum types
   factory.registerScriptingEnums<dua_btcpp_nodes::SafeLandingPolicy>();
+  factory.registerScriptingEnums<dua_btcpp_nodes::TrackSide>();
 }
 
 } // namespace dua_btcpp_nodes

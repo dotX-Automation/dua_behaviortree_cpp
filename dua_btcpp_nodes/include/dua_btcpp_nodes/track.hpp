@@ -1,9 +1,9 @@
 /**
- * Executes a vertical safe landing.
+ * Tracks a target.
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
- * August 25, 2025
+ * August 26, 2025
  */
 
 /**
@@ -37,30 +37,29 @@
 #include <behaviortree_cpp/bt_factory.h>
 
 #include <dua_common_interfaces/msg/command_result_stamped.hpp>
-#include <dua_aircraft_interfaces/action/safe_landing.hpp>
+#include <dua_mission_interfaces/action/track.hpp>
 
 using namespace dua_common_interfaces::msg;
 
-using namespace dua_aircraft_interfaces::action;
+using namespace dua_mission_interfaces::action;
 
 namespace dua_btcpp_nodes
 {
 
 /**
- * Safe landing spot choice policy, aligned with action interface.
+ * Side at which the target has been spotted.
  */
-enum SafeLandingPolicy
+enum TrackSide
 {
-  VSL_UNDEFINED = SafeLanding::Goal::POLICY_UNDEFINED,
-  VSL_NEAREST   = SafeLanding::Goal::POLICY_NEAREST,
-  VSL_HIGHEST   = SafeLanding::Goal::POLICY_HIGHEST,
-  VSL_LOWEST    = SafeLanding::Goal::POLICY_LOWEST
+  TRACK_LEFT   = Track::Goal::LEFT,
+  TRACK_CENTER = Track::Goal::CENTER,
+  TRACK_RIGHT  = Track::Goal::RIGHT
 };
 
 /**
- * Node that executes a vertical safe landing.
+ * Node that tracks a target.
  */
-class DUA_BTCPP_NODES_PUBLIC VerticalSafeLandingNode : public BT::StatefulActionNode
+class DUA_BTCPP_NODES_PUBLIC TrackNode : public BT::StatefulActionNode
 {
 public:
   /**
@@ -74,7 +73,7 @@ public:
    * @param spin Whether to spin the ROS 2 node when this node calls the action.
    * @throws std::runtime_error if the action name has not been correctly specified.
    */
-  VerticalSafeLandingNode(
+  TrackNode(
     const std::string & node_name,
     const BT::NodeConfig & node_config,
     dua_node::NodeBase * ros2_node,
@@ -85,7 +84,7 @@ public:
   /**
    * @brief Destructor.
    */
-  ~VerticalSafeLandingNode();
+  ~TrackNode();
 
   /**
    * @brief Returns the list of ports used by this node.
@@ -117,13 +116,13 @@ private:
   dua_btcpp_base::EntityManager::SharedPtr clients_cache_ = nullptr;
 
   /* Pointer to action client. */
-  simple_actionclient::Client<SafeLanding>::SharedPtr action_client_ = nullptr;
+  simple_actionclient::Client<Track>::SharedPtr action_client_ = nullptr;
 
   /* Pointer to current goal. */
-  rclcpp_action::ClientGoalHandle<SafeLanding>::SharedPtr current_goal_ = nullptr;
+  rclcpp_action::ClientGoalHandle<Track>::SharedPtr current_goal_ = nullptr;
 
   /* Current result future. */
-  std::shared_future<rclcpp_action::ClientGoalHandle<SafeLanding>::WrappedResult> current_res_future_;
+  std::shared_future<rclcpp_action::ClientGoalHandle<Track>::WrappedResult> current_res_future_;
 
   /* Wait for server to come up upon creation of the client. */
   bool wait_server_ = true;

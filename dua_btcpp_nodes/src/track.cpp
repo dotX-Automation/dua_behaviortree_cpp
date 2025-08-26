@@ -1,9 +1,9 @@
 /**
- * Executes a vertical safe landing.
+ * Tracks a target.
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
- * August 25, 2025
+ * August 26, 2025
  */
 
 /**
@@ -22,12 +22,12 @@
  * limitations under the License.
  */
 
-#include <dua_btcpp_nodes/vertical_safe_landing.hpp>
+#include <dua_btcpp_nodes/track.hpp>
 
 namespace dua_btcpp_nodes
 {
 
-VerticalSafeLandingNode::VerticalSafeLandingNode(
+TrackNode::TrackNode(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
   dua_node::NodeBase * ros2_node,
@@ -47,63 +47,62 @@ VerticalSafeLandingNode::VerticalSafeLandingNode(
 
   auto port_it = config().input_ports.find("action_name");
   if (port_it == config().input_ports.end()) {
-    throw std::runtime_error("dua_btcpp_nodes::VerticalSafeLandingNode::VerticalSafeLandingNode: Action name not found in input ports.");
+    throw std::runtime_error("dua_btcpp_nodes::TrackNode::TrackNode: Action name not found in input ports.");
   }
 
   const std::string & bb_action_name = port_it->second;
   if (bb_action_name.empty()) {
-    throw std::runtime_error("dua_btcpp_nodes::VerticalSafeLandingNode::VerticalSafeLandingNode: Action name is empty.");
+    throw std::runtime_error("dua_btcpp_nodes::TrackNode::TrackNode: Action name is empty.");
   }
 
   if (!isBlackboardPointer(bb_action_name)) {
     // Action name has been hardcoded so we can use it right away
-    action_client_ = clients_cache_->get_action_client<SafeLanding>(bb_action_name, wait_server);
+    action_client_ = clients_cache_->get_action_client<Track>(bb_action_name, wait_server);
   }
   // If we reach this point, it means we are using a blackboard pointer which will be set later on,
   // so creation of the client is deferred to the tick method call
 }
 
-VerticalSafeLandingNode::~VerticalSafeLandingNode()
+TrackNode::~TrackNode()
 {}
 
-BT::PortsList VerticalSafeLandingNode::providedPorts()
+BT::PortsList TrackNode::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("action_name", "Name of the ROS 2 SafeLanding action"),
-    BT::InputPort<double>("decision_altitude", "Altitude [m] at which final descent may be started"),
-    BT::InputPort<std::string>("frame_id", "Reference frame for the decision altitude setpoint"),
-    BT::InputPort<SafeLandingPolicy>("policy", 0, "Safe landing spot choice policy to apply"),
+    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Track action"),
+    BT::InputPort<TrackSide>("side", TrackSide::TRACK_CENTER, "Side at which the target has been spotted"),
+    BT::InputPort<bool>("stop_centered", "Whether to stop the operation when the target has been centered in the view"),
+    BT::InputPort<std::string>("target_id", "ID of the target to track"),
     BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)")
   };
 }
 
-BT::NodeStatus VerticalSafeLandingNode::onStart()
+BT::NodeStatus TrackNode::onStart()
 {
   // First, create the client if it wasn't created already
   if (action_client_ == nullptr) {
     auto action_name = getInput<std::string>("action_name");
-    action_client_ = clients_cache_->get_action_client<SafeLanding>(action_name.value(), wait_server_);
+    action_client_ = clients_cache_->get_action_client<Track>(action_name.value(), wait_server_);
   }
 
   // Get action goal data
-  double decision_altitude = getInput<double>("decision_altitude").value();
-  std::string frame_id = getInput<std::string>("frame_id").value();
-  SafeLandingPolicy policy = getInput<SafeLandingPolicy>("policy").value();
+  TrackSide side = getInput<TrackSide>("side").value();
+  bool stop_centered = getInput<bool>("stop_centered").value();
+  std::string target_id = getInput<std::string>("target_id").value();
 
   // Fill the action goal
-  SafeLanding::Goal slnd_goal{};
-  slnd_goal.minimums.header.set__stamp(ros2_node_->get_clock()->now());
-  slnd_goal.minimums.header.set__frame_id(frame_id);
-  slnd_goal.minimums.point.set__z(decision_altitude);
-  slnd_goal.set__policy(policy);
+  Track::Goal track_goal{};
+  track_goal.set__start_side(side);
+  track_goal.set__stop_when_centered(stop_centered);
+  track_goal.set__target_id(target_id);
 
-  // Start the safe landing operation
+  // Start the track operation
   int timeout_ms = getInput<int>("timeout").value();
-  current_goal_ = action_client_->send_goal_sync(slnd_goal, spin_, timeout_ms);
+  current_goal_ = action_client_->send_goal_sync(track_goal, spin_, timeout_ms);
   if (current_goal_ == nullptr) {
     RCLCPP_ERROR(
       ros2_node_->get_logger(),
-      "SafeLanding goal rejected");
+      "Track goal rejected");
     return BT::NodeStatus::FAILURE;
   }
 
@@ -113,14 +112,13 @@ BT::NodeStatus VerticalSafeLandingNode::onStart()
 
   RCLCPP_WARN(
     ros2_node_->get_logger(),
-    "Requested safe landing at %.2f m (%d) (%s)",
-    decision_altitude,
-    static_cast<int>(policy),
-    frame_id.c_str());
+    stop_centered ? "Requested tracking of '%s' (%d)" : "Requested continuous tracking of '%s' (%d)",
+    target_id.c_str(),
+    static_cast<int>(side));
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus VerticalSafeLandingNode::onRunning()
+BT::NodeStatus TrackNode::onRunning()
 {
   int timeout_ms = getInput<int>("timeout").value();
   if (timeout_ms <= 0) {
@@ -129,7 +127,7 @@ BT::NodeStatus VerticalSafeLandingNode::onRunning()
   }
 
   // Check if the goal has been completed
-  rclcpp_action::ClientGoalHandle<SafeLanding>::WrappedResult goal_result;
+  rclcpp_action::ClientGoalHandle<Track>::WrappedResult goal_result;
   if (!spin_) {
     // Have to manually check the future
     auto f_status = current_res_future_.wait_for(std::chrono::milliseconds(timeout_ms));
@@ -154,19 +152,19 @@ BT::NodeStatus VerticalSafeLandingNode::onRunning()
 
   // Check operation result
   rclcpp_action::ResultCode code = goal_result.code;
-  SafeLanding::Result::SharedPtr res = goal_result.result;
+  Track::Result::SharedPtr res = goal_result.result;
   bool success = (code == rclcpp_action::ResultCode::SUCCEEDED || code == rclcpp_action::ResultCode::UNKNOWN) &&
     res->result.result == CommandResultStamped::SUCCESS;
   if (success) {
-    RCLCPP_WARN(ros2_node_->get_logger(), "SafeLanding succeeded");
+    RCLCPP_WARN(ros2_node_->get_logger(), "Track succeeded");
     return BT::NodeStatus::SUCCESS;
   } else {
-    RCLCPP_ERROR(ros2_node_->get_logger(), "SafeLanding failed");
+    RCLCPP_ERROR(ros2_node_->get_logger(), "Track failed");
     return BT::NodeStatus::FAILURE;
   }
 }
 
-void VerticalSafeLandingNode::onHalted()
+void TrackNode::onHalted()
 {
   // Cancel the current goal, if present
   if (current_goal_ != nullptr) {
