@@ -106,10 +106,6 @@ BT::NodeStatus TrackNode::onStart()
     return BT::NodeStatus::FAILURE;
   }
 
-  if (!spin_) {
-    current_res_future_ = action_client_->get_result(current_goal_);
-  }
-
   RCLCPP_WARN(
     ros2_node_->get_logger(),
     stop_centered ? "Requested tracking of '%s' (%d)" : "Requested continuous tracking of '%s' (%d)",
@@ -126,13 +122,20 @@ BT::NodeStatus TrackNode::onRunning()
     timeout_ms = 10;
   }
 
+  // Ask for the result (once)
+  if (!spin_ && current_res_future_ == nullptr) {
+    current_res_future_ =
+      std::make_unique<std::shared_future<rclcpp_action::ClientGoalHandle<Track>::WrappedResult>>(
+        action_client_->get_result(current_goal_));
+  }
+
   // Check if the goal has been completed
   rclcpp_action::ClientGoalHandle<Track>::WrappedResult goal_result;
   if (!spin_) {
     // Have to manually check the future
-    auto f_status = current_res_future_.wait_for(std::chrono::milliseconds(timeout_ms));
+    auto f_status = current_res_future_->wait_for(std::chrono::milliseconds(timeout_ms));
     if (f_status == std::future_status::ready) {
-      goal_result = current_res_future_.get();
+      goal_result = current_res_future_->get();
     } else {
       return BT::NodeStatus::RUNNING;
     }
@@ -140,15 +143,16 @@ BT::NodeStatus TrackNode::onRunning()
     // Have to spin, use the API
     auto err = rclcpp::spin_until_future_complete(
       ros2_node_->shared_from_this(),
-      current_res_future_,
+      *current_res_future_,
       std::chrono::milliseconds(timeout_ms));
     if (err == rclcpp::FutureReturnCode::SUCCESS) {
-      goal_result = current_res_future_.get();
+      goal_result = current_res_future_->get();
     } else {
       return BT::NodeStatus::RUNNING;
     }
   }
   current_goal_.reset();
+  current_res_future_.reset();
 
   // Check operation result
   rclcpp_action::ResultCode code = goal_result.code;
@@ -169,7 +173,16 @@ void TrackNode::onHalted()
   // Cancel the current goal, if present
   if (current_goal_ != nullptr) {
     int timeout_ms = getInput<int>("timeout").value();
-    action_client_->cancel_and_get_result_sync(current_goal_, spin_, timeout_ms);
+
+    try {
+      // This might fail upon e.g. process termination
+      action_client_->cancel_and_get_result_sync(current_goal_, spin_, timeout_ms);
+    } catch (const std::exception & e) {
+      RCLCPP_FATAL(
+        ros2_node_->get_logger(),
+        "Failed to cancel Track on halt: %s",
+        e.what());
+    }
     current_goal_.reset();
   }
 }

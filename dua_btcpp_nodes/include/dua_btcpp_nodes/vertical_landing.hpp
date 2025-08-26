@@ -112,7 +112,7 @@ private:
   rclcpp_action::ClientGoalHandle<Landing>::SharedPtr current_goal_ = nullptr;
 
   /* Current result future. */
-  std::shared_future<rclcpp_action::ClientGoalHandle<Landing>::WrappedResult> current_res_future_;
+  std::unique_ptr<std::shared_future<rclcpp_action::ClientGoalHandle<Landing>::WrappedResult>> current_res_future_ = nullptr;
 
   /* Wait for server to come up upon creation of the client. */
   bool wait_server_ = true;
