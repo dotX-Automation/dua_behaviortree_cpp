@@ -93,7 +93,7 @@ void BTExecutor::bt_executor_routine()
       for (const auto & [uid, name] : ordered_uid_to_path) {
         const BT::TreeObserver::NodeStatistics & stats = bt_observer_->getStatistics(uid);
         std::cout << "[" << name
-                  << "] \tTr/Su/Fa/Sk:  " << stats.transitions_count
+                  << "] \tTran/Succ/Fail/Skip:  " << stats.transitions_count
                   << "/" << stats.success_count
                   << "/" << stats.failure_count
                   << "/" << stats.skip_count
