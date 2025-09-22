@@ -78,3 +78,6 @@ void BTExecutor::init_service_servers()
 }
 
 } // namespace btcpp_executor
+
+#include <rclcpp_components/register_node_macro.hpp>
+RCLCPP_COMPONENTS_REGISTER_NODE(btcpp_executor::BTExecutor)
