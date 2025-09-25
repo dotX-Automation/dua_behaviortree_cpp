@@ -30,6 +30,7 @@ void BTExecutor::bt_executor_routine()
   int64_t tick_period_ms = static_cast<int64_t>(
     std::round(
       1000.0 / static_cast<double>(get_parameter("btcpp.tick_rate").as_int())));
+  bool catch_exceptions = get_parameter("btcpp.debug.catch_exceptions").as_bool();
 
   RCLCPP_WARN(get_logger(), "BT executor started");
 
@@ -48,15 +49,19 @@ void BTExecutor::bt_executor_routine()
     }
 
     // Do one tick
-    bool ok = true;
-    try {
+    if (catch_exceptions) {
+      bool ok = true;
+      try {
+        status = bt_->tickOnce();
+      } catch (const std::exception & e) {
+        RCLCPP_FATAL(get_logger(), "Exception while ticking BT: %s", e.what());
+        ok = false;
+      }
+      if (!ok) {
+        break;
+      }
+    } else {
       status = bt_->tickOnce();
-    } catch (const std::exception & e) {
-      RCLCPP_FATAL(get_logger(), "Error while ticking BT: %s", e.what());
-      ok = false;
-    }
-    if (!ok) {
-      break;
     }
 
     // Check tree status

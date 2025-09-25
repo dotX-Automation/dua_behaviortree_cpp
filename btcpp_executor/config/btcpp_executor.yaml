@@ -3,6 +3,7 @@
     autostart: false
     btcpp:
       debug:
+        catch_exceptions: true
         print_statistics: false
         treenodes_model:
           builtins: false

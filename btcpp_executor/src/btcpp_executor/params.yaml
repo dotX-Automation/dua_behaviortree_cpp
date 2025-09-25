@@ -32,6 +32,13 @@ params:
     read_only: false
     var_name: global_bb_persistent_
 
+  btcpp.debug.catch_exceptions:
+    type: bool
+    default_value: true
+    description: "If true, worker catches exceptions thrown by tree nodes and halts tree execution instead of propagating the exception"
+    constraints: "Changes require executor restart"
+    read_only: false
+
   btcpp.debug.print_statistics:
     type: bool
     default_value: false
