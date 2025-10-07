@@ -9,6 +9,7 @@
           builtins: false
           path: ''
       global_blackboard:
+        init_file: ""
         persistent: false
       groot2_publisher: false
       main_tree_name: MainTree

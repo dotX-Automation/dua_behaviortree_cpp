@@ -52,6 +52,7 @@ public:
    * @param factory Pointer to the BT.CPP factory to use.
    * @param node Pointer to the ROS 2 node to use.
    * @param entity_manager Pointer to the entity manager to use.
+   * @param global_bb Pointer to the global blackboard to use.
    * @param wait_servers Enables waiting for service/action servers upon client creation.
    * @param spin Enables spinning the ROS 2 node when client nodes call services/actions.
    * @throws std::runtime_error if any node fails to register.
@@ -61,6 +62,7 @@ public:
     BT::BehaviorTreeFactory & factory,
     dua_node::NodeBase * node,
     std::shared_ptr<dua_btcpp_base::EntityManager> entity_manager,
+    BT::Blackboard::Ptr global_bb,
     bool wait_servers,
     bool spin) = 0;
 

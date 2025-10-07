@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>btcpp_executor</name>
-  <version>1.0.2</version>
+  <version>1.1.0</version>
   <description>ROS 2 node acting as BehaviorTree.CPP behavior trees executor.</description>
   <maintainer email="info@dotxautomation.com">dotX Automation s.r.l.</maintainer>
   <license>Apache-2.0</license>
@@ -13,6 +13,8 @@
   <depend>dua_app_management</depend>
   <depend>dua_btcpp_base</depend>
   <depend>dua_btcpp_types</depend>
+  <depend>dua_common_interfaces</depend>
+  <depend>dua_hardware_interfaces</depend>
   <depend>dua_node_cpp</depend>
   <depend>dua_qos_cpp</depend>
   <depend>params_manager_cpp</depend>

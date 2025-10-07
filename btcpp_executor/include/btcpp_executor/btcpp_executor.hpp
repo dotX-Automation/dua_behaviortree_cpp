@@ -25,8 +25,8 @@
 #include <atomic>
 #include <chrono>
 #include <cmath>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <memory>
 #include <stdexcept>
@@ -50,8 +50,14 @@
 #include <dua_node_cpp/dua_node.hpp>
 #include <dua_qos_cpp/dua_qos.hpp>
 
+#include <dua_common_interfaces/msg/command_result_stamped.hpp>
+
+#include <dua_hardware_interfaces/srv/save_file.hpp>
 #include <std_srvs/srv/set_bool.hpp>
 
+using namespace dua_common_interfaces::msg;
+
+using namespace dua_hardware_interfaces::srv;
 using namespace std_srvs::srv;
 
 namespace btcpp_executor
@@ -96,9 +102,11 @@ private:
 
   /* Service callback groups. */
   rclcpp::CallbackGroup::SharedPtr enable_cgroup_;
+  rclcpp::CallbackGroup::SharedPtr save_bb_cgroup_;
 
   /* Service servers. */
   rclcpp::Service<SetBool>::SharedPtr enable_server_;
+  rclcpp::Service<SaveFile>::SharedPtr save_bb_server_;
 
   /* Service callbacks. */
   /**
@@ -110,6 +118,16 @@ private:
   void enable_clbk(
     SetBool::Request::SharedPtr req,
     SetBool::Response::SharedPtr res);
+
+  /**
+   * @brief Handles request to dump the global blackboard to file.
+   *
+   * @param req Request.
+   * @param res Response.
+   */
+  void save_bb_clbk(
+    SaveFile::Request::SharedPtr req,
+    SaveFile::Response::SharedPtr res);
 
   /* Auxiliary routines. */
   /**
@@ -133,6 +151,8 @@ private:
   std::string node_status_to_string(const BT::NodeStatus & status);
 
   /* Node status members. */
+  bool global_bb_init_loaded_ = false;
+
   /* BT executor thread. */
   std::thread bt_executor_;
 
@@ -140,6 +160,14 @@ private:
    * @brief BT executor thread routine.
    */
   void bt_executor_routine();
+
+  /**
+   * @brief Validate the btcpp.global_blackboard.init_file parameter.
+   *
+   * @param p Parameter to validate.
+   * @return True if parameter update is successful, false otherwise.
+   */
+  bool validate_global_blackboard_init_file(const rclcpp::Parameter & p);
 
   /* Node status flag. */
   std::atomic<bool> running_ = false;

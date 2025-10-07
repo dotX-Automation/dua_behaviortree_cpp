@@ -22,6 +22,8 @@
  * limitations under the License.
  */
 
+#define UNUSED(arg) (void)(arg)
+
 #include <dua_btcpp_nodes/dua_btcpp_nodes.hpp>
 
 namespace dua_btcpp_nodes
@@ -31,9 +33,12 @@ void DUARegister::register_nodes(
   BT::BehaviorTreeFactory & factory,
   dua_node::NodeBase * node,
   std::shared_ptr<dua_btcpp_base::EntityManager> entity_manager,
+  BT::Blackboard::Ptr global_bb,
   bool wait_servers,
   bool spin)
 {
+  UNUSED(global_bb);
+
   // Action clients
   factory.registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);

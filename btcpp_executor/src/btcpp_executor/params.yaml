@@ -24,6 +24,14 @@ params:
     constraints: "Changes require executor restart"
     read_only: false
 
+  btcpp.global_blackboard.init_file:
+    type: string
+    default_value: ""
+    description: "Path to a JSON file to load in the global blackboard"
+    constraints: "Changes require executor restart, loaded only the first time if bb is persistent, empty string means no file to load"
+    read_only: false
+    validator: validate_global_blackboard_init_file
+
   btcpp.global_blackboard.persistent:
     type: bool
     default_value: false

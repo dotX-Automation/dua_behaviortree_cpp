@@ -62,6 +62,7 @@ BTExecutor::~BTExecutor()
 void BTExecutor::init_cgroups()
 {
   enable_cgroup_ = dua_create_exclusive_cgroup();
+  save_bb_cgroup_ = dua_create_exclusive_cgroup();
 }
 
 void BTExecutor::init_service_servers()
@@ -75,6 +76,16 @@ void BTExecutor::init_service_servers()
       std::placeholders::_1,
       std::placeholders::_2),
     enable_cgroup_);
+
+  // save_global_blackboard
+  save_bb_server_ = dua_create_service_server<SaveFile>(
+    "~/save_global_blackboard",
+    std::bind(
+      &BTExecutor::save_bb_clbk,
+      this,
+      std::placeholders::_1,
+      std::placeholders::_2),
+    save_bb_cgroup_);
 }
 
 } // namespace btcpp_executor

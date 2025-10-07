@@ -20,6 +20,8 @@
  * limitations under the License.
  */
 
+#define UNUSED(arg) (void)(arg)
+
 #include <btcpp_executor/btcpp_executor.hpp>
 
 namespace btcpp_executor
@@ -68,6 +70,7 @@ bool BTExecutor::start_bt_executor()
         *bt_factory_,
         this,
         entity_manager_,
+        global_blackboard_,
         wait_servers_,
         false);
     } catch (const std::exception & e) {
@@ -92,6 +95,31 @@ bool BTExecutor::start_bt_executor()
 
   // Create global blackboard
   create_global_blackboard();
+
+  // Load global blackboard contents from file
+  std::string global_bb_init_file = get_parameter("btcpp.global_blackboard.init_file").as_string();
+  if (!global_bb_init_file.empty()) {
+    if (!global_bb_persistent_ || !global_bb_init_loaded_) {
+      try {
+        std::ifstream in_file(global_bb_init_file);
+        nlohmann::json bb_init_j;
+        in_file >> bb_init_j;
+        BT::ImportBlackboardFromJSON(bb_init_j, *global_blackboard_);
+        global_bb_init_loaded_ = true;
+      } catch (const std::exception & e) {
+        RCLCPP_ERROR(get_logger(), "Failed to load global blackboard init file: %s", e.what());
+        global_bb_init_loaded_ = false;
+        ok = false;
+      }
+    }
+  }
+  if (!ok) {
+    delete_global_blackboard();
+    bt_factory_.reset();
+    entity_manager_->clear();
+    plugins_list_.clear();
+    return false;
+  }
 
   // Load tree XML files
   std::vector<std::string> tree_files = get_parameter("btcpp.tree_files").as_string_array();
@@ -214,6 +242,15 @@ std::string BTExecutor::node_status_to_string(const BT::NodeStatus & status)
     default:
       return "UNKNOWN";
   }
+}
+
+bool BTExecutor::validate_global_blackboard_init_file(const rclcpp::Parameter & p)
+{
+  UNUSED(p);
+
+  // Just signal that this has to be reloaded in any case
+  global_bb_init_loaded_ = false;
+  return true;
 }
 
 } // namespace btcpp_executor
