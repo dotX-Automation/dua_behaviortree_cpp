@@ -70,9 +70,11 @@ BT::PortsList TrackNode::providedPorts()
 {
   return {
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 Track action"),
-    BT::InputPort<TrackSide>("side", TrackSide::TRACK_CENTER, "Side at which the target has been spotted"),
-    BT::InputPort<bool>("stop_centered", "Whether to stop the operation when the target has been centered in the view"),
+    BT::InputPort<std::string>("frame", "Reference frame in which tracking is evaluated"),
     BT::InputPort<std::string>("target_id", "ID of the target to track"),
+    BT::InputPort<double>("distance", 0.0, "Desired distance from the target [m]"),
+    BT::InputPort<bool>("stop", true, "Whether to stop the operation when the target has been centered in the view"),
+    BT::InputPort<TrackSide>("side", TrackSide::TRACK_CENTER, "Side at which the target has been spotted"),
     BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)")
   };
 }
@@ -86,15 +88,19 @@ BT::NodeStatus TrackNode::onStart()
   }
 
   // Get action goal data
-  TrackSide side = getInput<TrackSide>("side").value();
-  bool stop_centered = getInput<bool>("stop_centered").value();
+  std::string frame = getInput<std::string>("frame").value();
   std::string target_id = getInput<std::string>("target_id").value();
+  double distance = getInput<double>("distance").value();
+  bool stop = getInput<bool>("stop").value();
+  TrackSide side = getInput<TrackSide>("side").value();
 
   // Fill the action goal
   Track::Goal track_goal{};
-  track_goal.set__start_side(side);
-  track_goal.set__stop_when_centered(stop_centered);
-  track_goal.set__target_id(target_id);
+  track_goal.set__reference_frame(frame);
+  track_goal.set__class_id(target_id);
+  track_goal.set__desired_distance(distance);
+  track_goal.set__stop_on_success(stop);
+  track_goal.set__start_side(static_cast<int8_t>(side));
 
   // Start the track operation
   int timeout_ms = getInput<int>("timeout").value();
@@ -108,7 +114,7 @@ BT::NodeStatus TrackNode::onStart()
 
   RCLCPP_WARN(
     ros2_node_->get_logger(),
-    stop_centered ? "Requested tracking of '%s' (%d)" : "Requested continuous tracking of '%s' (%d)",
+    stop ? "Requested tracking of '%s' (%d)" : "Requested continuous tracking of '%s' (%d)",
     target_id.c_str(),
     static_cast<int>(side));
   return BT::NodeStatus::RUNNING;

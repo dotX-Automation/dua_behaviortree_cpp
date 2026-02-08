@@ -17,6 +17,11 @@
       tree_files:
         - ''
     debug: false
+    dua:
+      tf_server:
+        get_transform: true
+        transform_pose: true
+        wait_servers: false
     plugins:
       - ''
     use_sim_time: false

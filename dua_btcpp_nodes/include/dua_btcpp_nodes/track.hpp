@@ -37,11 +37,11 @@
 #include <behaviortree_cpp/bt_factory.h>
 
 #include <dua_common_interfaces/msg/command_result_stamped.hpp>
-#include <dua_mission_interfaces/action/track.hpp>
+#include <dua_movement_interfaces/action/track.hpp>
 
 using namespace dua_common_interfaces::msg;
 
-using namespace dua_mission_interfaces::action;
+using namespace dua_movement_interfaces::action;
 
 namespace dua_btcpp_nodes
 {

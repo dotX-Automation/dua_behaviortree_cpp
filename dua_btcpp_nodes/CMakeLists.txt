@@ -26,7 +26,6 @@ find_package(dua_btcpp_types REQUIRED)
 find_package(dua_common_interfaces REQUIRED)
 find_package(dua_hardware_interfaces REQUIRED)
 find_package(dua_movement_interfaces REQUIRED)
-find_package(dua_mission_interfaces REQUIRED)
 find_package(dua_node_cpp REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -53,7 +52,6 @@ ament_target_dependencies(dua_btcpp_nodes
   dua_common_interfaces
   dua_hardware_interfaces
   dua_movement_interfaces
-  dua_mission_interfaces
   dua_node_cpp
   pluginlib
   rclcpp
@@ -100,7 +98,6 @@ ament_export_dependencies(
   dua_common_interfaces
   dua_hardware_interfaces
   dua_movement_interfaces
-  dua_mission_interfaces
   dua_node_cpp
   pluginlib
   rclcpp
