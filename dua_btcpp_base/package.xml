@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>dua_btcpp_base</name>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
   <description>Base package for integrating more custom BT.CPP nodes with the btcpp_executor.</description>
   <maintainer email="info@dotxautomation.com">dotX Automation s.r.l.</maintainer>
   <license>Apache-2.0</license>

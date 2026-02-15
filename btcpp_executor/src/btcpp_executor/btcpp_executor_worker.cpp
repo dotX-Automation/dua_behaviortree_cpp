@@ -53,9 +53,14 @@ void BTExecutor::bt_executor_routine()
       bool ok = true;
       try {
         status = bt_->tickOnce();
-      } catch (const std::exception & e) {
-        RCLCPP_FATAL(get_logger(), "Exception while ticking BT: %s", e.what());
+      } catch (const BT::NodeExecutionError & e) {
         ok = false;
+        std::stringstream ss;
+        ss << "Exception in node '" << e.failedNode().node_name << "'\n";
+        ss << " - Registration name: '" << e.failedNode().registration_name << "'\n";
+        ss << " - Node path: " << e.failedNode().node_path << "\n";
+        ss << " - Original message: " << e.originalMessage() << "\n";
+        RCLCPP_FATAL(get_logger(), "%s", ss.str().c_str());
       }
       if (!ok) {
         break;

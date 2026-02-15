@@ -30,6 +30,7 @@
 #include <map>
 #include <memory>
 #include <stdexcept>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <unordered_map>
@@ -37,6 +38,7 @@
 
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
+#include <behaviortree_cpp/exceptions.h>
 #include <behaviortree_cpp/loggers/bt_observer.h>
 #include <behaviortree_cpp/loggers/groot2_publisher.h>
 #include <behaviortree_cpp/xml_parsing.h>
