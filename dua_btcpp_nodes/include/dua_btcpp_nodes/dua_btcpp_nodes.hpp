@@ -35,6 +35,7 @@
 
 #include "arm_component.hpp"
 #include "disarm_component.hpp"
+#include "explore.hpp"
 #include "navigate.hpp"
 #include "track.hpp"
 #include "vertical_landing.hpp"
@@ -47,6 +48,11 @@
 #include "publish_string.hpp"
 
 #include "subscriber_trigger.hpp"
+
+#include "check_elapsed_time.hpp"
+#include "check_time_frame.hpp"
+
+#include "test_preset.hpp"
 
 namespace dua_btcpp_nodes
 {

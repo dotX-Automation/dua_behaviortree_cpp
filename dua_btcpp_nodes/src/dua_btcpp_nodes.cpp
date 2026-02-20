@@ -37,11 +37,10 @@ void DUARegister::register_nodes(
   bool wait_servers,
   bool spin)
 {
-  UNUSED(global_bb);
-
   // Action clients
   factory.registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<ExploreNode>("Explore", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<NavigateNode>("Navigate", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<TrackNode>("Track", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<VerticalLandingNode>("VerticalLanding", node, entity_manager, wait_servers, spin);
@@ -57,6 +56,13 @@ void DUARegister::register_nodes(
 
   // Topic publishers
   factory.registerNodeType<PublishString>("PublishString", node, entity_manager);
+
+  // Specialized nodes
+  factory.registerNodeType<CheckElapsedTime>("CheckElapsedTime", node);
+  factory.registerNodeType<CheckTimeFrame>("CheckTimeFrame", node);
+
+  // Test nodes
+  factory.registerNodeType<TestPreset>("TestPreset", node, global_bb);
 
   // Scripting enum types
   factory.registerScriptingEnums<dua_btcpp_nodes::SafeLandingPolicy>();

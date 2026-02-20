@@ -1,13 +1,13 @@
 /**
- * Tracks a target.
+ * Explores a given area.
  *
  * dotX Automation s.r.l. <info@dotxautomation.com>
  *
- * August 26, 2025
+ * February 20, 2026
  */
 
 /**
- * Copyright 2025 dotX Automation s.r.l.
+ * Copyright 2026 dotX Automation s.r.l.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@
  * limitations under the License.
  */
 
-#include <dua_btcpp_nodes/track.hpp>
+#include <dua_btcpp_nodes/explore.hpp>
 
 namespace dua_btcpp_nodes
 {
 
-TrackNode::TrackNode(
+ExploreNode::ExploreNode(
   const std::string & node_name,
   const BT::NodeConfig & node_config,
   dua_node::NodeBase * ros2_node,
@@ -47,80 +47,70 @@ TrackNode::TrackNode(
 
   auto port_it = config().input_ports.find("action_name");
   if (port_it == config().input_ports.end()) {
-    throw std::runtime_error("dua_btcpp_nodes::TrackNode::TrackNode: Action name not found in input ports.");
+    throw std::runtime_error("dua_btcpp_nodes::ExploreNode::ExploreNode: Action name not found in input ports.");
   }
 
   const std::string & bb_action_name = port_it->second;
   if (bb_action_name.empty()) {
-    throw std::runtime_error("dua_btcpp_nodes::TrackNode::TrackNode: Action name is empty.");
+    throw std::runtime_error("dua_btcpp_nodes::ExploreNode::ExploreNode: Action name is empty.");
   }
 
   if (!isBlackboardPointer(bb_action_name)) {
     // Action name has been hardcoded so we can use it right away
-    action_client_ = clients_cache_->get_action_client<Track>(bb_action_name, wait_server);
+    action_client_ = clients_cache_->get_action_client<Explore>(bb_action_name, wait_server);
   }
   // If we reach this point, it means we are using a blackboard pointer which will be set later on,
   // so creation of the client is deferred to the tick method call
 }
 
-TrackNode::~TrackNode()
+ExploreNode::~ExploreNode()
 {}
 
-BT::PortsList TrackNode::providedPorts()
+BT::PortsList ExploreNode::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Track action"),
-    BT::InputPort<std::string>("frame", "Reference frame in which tracking is evaluated"),
-    BT::InputPort<std::string>("target_id", "ID of the target to track"),
-    BT::InputPort<double>("distance", 0.0, "Desired distance from the target [m]"),
-    BT::InputPort<bool>("stop", true, "Whether to stop the operation when the target has been centered in the view"),
-    BT::InputPort<TrackSide>("side", TrackSide::TRACK_CENTER, "Side at which the target has been spotted"),
-    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)")
+    BT::InputPort<std::string>("action_name", "Name of the ROS 2 Explore action"),
+    BT::InputPort<bool>("first", false, "Whether this is the first time exploration is performed"),
+    BT::InputPort<bool>("persistent", false, "Whether exploration should go on indefinitely"),
+    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)"),
+    BT::InputPort<Polygon>("zone", Polygon{}, "Polygon defining the area to explore")
   };
 }
 
-BT::NodeStatus TrackNode::onStart()
+BT::NodeStatus ExploreNode::onStart()
 {
   // First, create the client if it wasn't created already
   if (action_client_ == nullptr) {
     auto action_name = getInput<std::string>("action_name");
-    action_client_ = clients_cache_->get_action_client<Track>(action_name.value(), wait_server_);
+    action_client_ = clients_cache_->get_action_client<Explore>(action_name.value(), wait_server_);
   }
 
-  // Get action goal data
-  std::string frame = getInput<std::string>("frame").value();
-  std::string target_id = getInput<std::string>("target_id").value();
-  double distance = getInput<double>("distance").value();
-  bool stop = getInput<bool>("stop").value();
-  TrackSide side = getInput<TrackSide>("side").value();
+  // Get action goal input data
+  bool first = getInput<bool>("first").value();
+  bool persistent = getInput<bool>("persistent").value();
+  Polygon zone = getInput<Polygon>("zone").value();
 
   // Fill the action goal
-  Track::Goal track_goal{};
-  track_goal.set__reference_frame(frame);
-  track_goal.set__class_id(target_id);
-  track_goal.set__desired_distance(distance);
-  track_goal.set__stop_on_success(stop);
-  track_goal.set__start_side(static_cast<int8_t>(side));
+  Explore::Goal explore_goal{};
+  explore_goal.set__first(first);
+  explore_goal.set__persistent(persistent);
+  explore_goal.set__zone(zone);
 
-  // Start the track operation
+  // Start the exploration operation
   int timeout_ms = getInput<int>("timeout").value();
-  current_goal_ = action_client_->send_goal_sync(track_goal, spin_, timeout_ms);
+  current_goal_ = action_client_->send_goal_sync(explore_goal, spin_, timeout_ms);
   if (current_goal_ == nullptr) {
     RCLCPP_ERROR(
       ros2_node_->get_logger(),
-      "Track goal rejected");
+      "Explore goal rejected");
     return BT::NodeStatus::FAILURE;
   }
 
-  RCLCPP_WARN(
-    ros2_node_->get_logger(),
-    stop ? "Requested tracking of '%s' (%d)" : "Requested continuous tracking of '%s' (%d)",
-    target_id.c_str(),
-    static_cast<int>(side));
+  RCLCPP_WARN(ros2_node_->get_logger(), "Started exploration");
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus TrackNode::onRunning()
+BT::NodeStatus ExploreNode::onRunning()
 {
   int timeout_ms = getInput<int>("timeout").value();
   if (timeout_ms <= 0) {
@@ -131,12 +121,12 @@ BT::NodeStatus TrackNode::onRunning()
   // Ask for the result (once)
   if (current_res_future_ == nullptr) {
     current_res_future_ =
-      std::make_unique<std::shared_future<rclcpp_action::ClientGoalHandle<Track>::WrappedResult>>(
+      std::make_unique<std::shared_future<rclcpp_action::ClientGoalHandle<Explore>::WrappedResult>>(
         action_client_->get_result(current_goal_));
   }
 
   // Check if the goal has been completed
-  rclcpp_action::ClientGoalHandle<Track>::WrappedResult goal_result;
+  rclcpp_action::ClientGoalHandle<Explore>::WrappedResult goal_result;
   if (!spin_) {
     // Have to manually check the future
     auto f_status = current_res_future_->wait_for(std::chrono::milliseconds(timeout_ms));
@@ -162,19 +152,19 @@ BT::NodeStatus TrackNode::onRunning()
 
   // Check operation result
   rclcpp_action::ResultCode code = goal_result.code;
-  Track::Result::SharedPtr res = goal_result.result;
+  Explore::Result::SharedPtr res = goal_result.result;
   bool success = (code == rclcpp_action::ResultCode::SUCCEEDED || code == rclcpp_action::ResultCode::UNKNOWN) &&
     res->result.result == CommandResultStamped::SUCCESS;
   if (success) {
-    RCLCPP_WARN(ros2_node_->get_logger(), "Track succeeded");
+    RCLCPP_WARN(ros2_node_->get_logger(), "Explore succeeded");
     return BT::NodeStatus::SUCCESS;
   } else {
-    RCLCPP_ERROR(ros2_node_->get_logger(), "Track failed");
+    RCLCPP_ERROR(ros2_node_->get_logger(), "Explore failed");
     return BT::NodeStatus::FAILURE;
   }
 }
 
-void TrackNode::onHalted()
+void ExploreNode::onHalted()
 {
   // Cancel the current goal, if present
   if (current_goal_ != nullptr) {
@@ -186,7 +176,7 @@ void TrackNode::onHalted()
     } catch (const std::exception & e) {
       RCLCPP_FATAL(
         ros2_node_->get_logger(),
-        "Failed to cancel Track on halt: %s",
+        "Failed to cancel Explore on halt: %s",
         e.what());
     }
     current_goal_.reset();

@@ -121,7 +121,7 @@ BT::NodeStatus VerticalTakeoffNode::onRunning()
   }
 
   // Ask for the result (once)
-  if (!spin_ && current_res_future_ == nullptr) {
+  if (current_res_future_ == nullptr) {
     current_res_future_ =
       std::make_unique<std::shared_future<rclcpp_action::ClientGoalHandle<Takeoff>::WrappedResult>>(
         action_client_->get_result(current_goal_));
