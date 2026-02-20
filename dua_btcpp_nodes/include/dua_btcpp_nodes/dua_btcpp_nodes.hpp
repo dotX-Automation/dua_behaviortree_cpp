@@ -35,6 +35,7 @@
 
 #include "arm_component.hpp"
 #include "disarm_component.hpp"
+#include "explore.hpp"
 #include "navigate.hpp"
 #include "track.hpp"
 #include "vertical_landing.hpp"

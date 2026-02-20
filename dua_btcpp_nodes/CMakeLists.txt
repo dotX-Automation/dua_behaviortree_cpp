@@ -27,6 +27,7 @@ find_package(dua_common_interfaces REQUIRED)
 find_package(dua_hardware_interfaces REQUIRED)
 find_package(dua_movement_interfaces REQUIRED)
 find_package(dua_node_cpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
@@ -53,6 +54,7 @@ ament_target_dependencies(dua_btcpp_nodes
   dua_hardware_interfaces
   dua_movement_interfaces
   dua_node_cpp
+  geometry_msgs
   pluginlib
   rclcpp
   rclcpp_action
@@ -99,6 +101,7 @@ ament_export_dependencies(
   dua_hardware_interfaces
   dua_movement_interfaces
   dua_node_cpp
+  geometry_msgs
   pluginlib
   rclcpp
   rclcpp_action

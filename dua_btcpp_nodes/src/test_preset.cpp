@@ -51,6 +51,17 @@ BT::NodeStatus TestPreset::tick()
   rclcpp::Time now = ros2_node_->get_clock()->now();
   global_blackboard_->set<rclcpp::Time>("check_elapsed_time_time_point", now);
 
+  // Explore test: store a sample exploration zone
+  geometry_msgs::msg::Polygon zone;
+  for (int i = 0; i < 4; ++i) {
+    geometry_msgs::msg::Point32 point;
+    point.x = i * 1.0;
+    point.y = i * 2.0;
+    point.z = 0.0;
+    zone.points.push_back(point);
+  }
+  global_blackboard_->set<geometry_msgs::msg::Polygon>("explore_zone", zone);
+
   return BT::NodeStatus::SUCCESS;
 }
 

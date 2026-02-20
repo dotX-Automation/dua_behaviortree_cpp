@@ -33,6 +33,8 @@
 #include <behaviortree_cpp/behavior_tree.h>
 #include <behaviortree_cpp/bt_factory.h>
 
+#include <geometry_msgs/msg/polygon.hpp>
+
 namespace dua_btcpp_nodes
 {
 

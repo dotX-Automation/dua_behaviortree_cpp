@@ -42,6 +42,7 @@ void DUARegister::register_nodes(
   // Action clients
   factory.registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<ExploreNode>("Explore", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<NavigateNode>("Navigate", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<TrackNode>("Track", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<VerticalLandingNode>("VerticalLanding", node, entity_manager, wait_servers, spin);
