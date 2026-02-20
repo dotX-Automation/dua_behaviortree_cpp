@@ -152,7 +152,8 @@ bool BTExecutor::start_bt_executor()
   // Load main tree
   std::string main_tree_name = get_parameter("btcpp.main_tree_name").as_string();
   try {
-    bt_ = std::make_unique<BT::Tree>(bt_factory_->createTree(main_tree_name, global_blackboard_));
+    auto main_tree_bb = BT::Blackboard::create(global_blackboard_);
+    bt_ = std::make_unique<BT::Tree>(bt_factory_->createTree(main_tree_name, main_tree_bb));
   } catch (const std::exception & e) {
     RCLCPP_FATAL(
       get_logger(),
