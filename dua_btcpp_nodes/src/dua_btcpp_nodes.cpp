@@ -58,6 +58,9 @@ void DUARegister::register_nodes(
   // Topic publishers
   factory.registerNodeType<PublishString>("PublishString", node, entity_manager);
 
+  // Specialized nodes
+  factory.registerNodeType<CheckTimeFrame>("CheckTimeFrame", node);
+
   // Scripting enum types
   factory.registerScriptingEnums<dua_btcpp_nodes::SafeLandingPolicy>();
   factory.registerScriptingEnums<dua_btcpp_nodes::TrackSide>();
