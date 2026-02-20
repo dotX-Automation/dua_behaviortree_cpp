@@ -84,7 +84,7 @@ void CheckElapsedTime::onHalted()
 bool CheckElapsedTime::check_elapsed_time(const rclcpp::Time & start_time, int interval)
 {
   auto now = ros2_node_->get_clock()->now();
-  auto interval_ros = rclcpp::Duration::from_nanoseconds(interval * 1e6);
+  auto interval_ros = rclcpp::Duration::from_nanoseconds(static_cast<int64_t>(interval) * 1000000LL);
   auto elapsed = now - start_time;
   return elapsed >= interval_ros;
 }

@@ -110,8 +110,8 @@ public:
     }
 
     if (consume) {
-      data = std::move(buffer_);
       valid_ = false;
+      data = std::move(buffer_);
     } else {
       data = buffer_;
     }

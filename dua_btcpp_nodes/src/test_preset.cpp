@@ -29,9 +29,9 @@ namespace dua_btcpp_nodes
 
 TestPreset::TestPreset(
   const std::string & node_name,
-    const BT::NodeConfig & node_config,
-    dua_node::NodeBase * ros2_node,
-    BT::Blackboard::Ptr global_blackboard)
+  const BT::NodeConfig & node_config,
+  dua_node::NodeBase * ros2_node,
+  BT::Blackboard::Ptr global_blackboard)
 : BT::SyncActionNode(node_name, node_config),
   ros2_node_(ros2_node),
   global_blackboard_(global_blackboard)

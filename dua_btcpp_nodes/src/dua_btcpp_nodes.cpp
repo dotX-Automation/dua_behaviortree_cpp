@@ -37,8 +37,6 @@ void DUARegister::register_nodes(
   bool wait_servers,
   bool spin)
 {
-  UNUSED(global_bb);
-
   // Action clients
   factory.registerNodeType<ArmComponent>("ArmComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<DisarmComponent>("DisarmComponent", node, entity_manager, wait_servers, spin);
