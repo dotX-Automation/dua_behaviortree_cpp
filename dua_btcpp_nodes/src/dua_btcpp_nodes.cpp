@@ -59,7 +59,11 @@ void DUARegister::register_nodes(
   factory.registerNodeType<PublishString>("PublishString", node, entity_manager);
 
   // Specialized nodes
+  factory.registerNodeType<CheckElapsedTime>("CheckElapsedTime", node);
   factory.registerNodeType<CheckTimeFrame>("CheckTimeFrame", node);
+
+  // Test nodes
+  factory.registerNodeType<TestPreset>("TestPreset", node, global_bb);
 
   // Scripting enum types
   factory.registerScriptingEnums<dua_btcpp_nodes::SafeLandingPolicy>();

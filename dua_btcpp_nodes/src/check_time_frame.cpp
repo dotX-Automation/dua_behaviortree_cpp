@@ -24,8 +24,6 @@
 
 #include <ctime>
 #include <regex>
-#include <stdexcept>
-#include <string>
 
 #include <errno.h>
 #include <string.h>

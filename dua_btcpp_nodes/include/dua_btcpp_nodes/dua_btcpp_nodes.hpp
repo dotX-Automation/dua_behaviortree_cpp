@@ -48,7 +48,10 @@
 
 #include "subscriber_trigger.hpp"
 
+#include "check_elapsed_time.hpp"
 #include "check_time_frame.hpp"
+
+#include "test_preset.hpp"
 
 namespace dua_btcpp_nodes
 {
