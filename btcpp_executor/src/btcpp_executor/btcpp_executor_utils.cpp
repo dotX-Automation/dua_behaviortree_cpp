@@ -63,6 +63,34 @@ bool BTExecutor::start_bt_executor()
     return false;
   }
 
+  // Create global blackboard
+  create_global_blackboard();
+
+  // Load global blackboard contents from file
+  std::string global_bb_init_file = get_parameter("btcpp.global_blackboard.init_file").as_string();
+  if (!global_bb_init_file.empty()) {
+    if (!global_bb_persistent_ || !global_bb_init_loaded_) {
+      try {
+        std::ifstream in_file(global_bb_init_file);
+        nlohmann::json bb_init_j;
+        in_file >> bb_init_j;
+        BT::ImportBlackboardFromJSON(bb_init_j, *global_blackboard_);
+        global_bb_init_loaded_ = true;
+      } catch (const std::exception & e) {
+        RCLCPP_ERROR(get_logger(), "Failed to load global blackboard init file: %s", e.what());
+        global_bb_init_loaded_ = false;
+        ok = false;
+      }
+    }
+  }
+  if (!ok) {
+    delete_global_blackboard();
+    bt_factory_.reset();
+    entity_manager_->clear();
+    plugins_list_.clear();
+    return false;
+  }
+
   // Register nodes from the plugins
   for (auto & pp : plugins_list_) {
     try {
@@ -85,33 +113,6 @@ bool BTExecutor::start_bt_executor()
     }
 
     RCLCPP_INFO(get_logger(), "[BT.CPP PLUGIN] %s", pp.first.c_str());
-  }
-  if (!ok) {
-    bt_factory_.reset();
-    entity_manager_->clear();
-    plugins_list_.clear();
-    return false;
-  }
-
-  // Create global blackboard
-  create_global_blackboard();
-
-  // Load global blackboard contents from file
-  std::string global_bb_init_file = get_parameter("btcpp.global_blackboard.init_file").as_string();
-  if (!global_bb_init_file.empty()) {
-    if (!global_bb_persistent_ || !global_bb_init_loaded_) {
-      try {
-        std::ifstream in_file(global_bb_init_file);
-        nlohmann::json bb_init_j;
-        in_file >> bb_init_j;
-        BT::ImportBlackboardFromJSON(bb_init_j, *global_blackboard_);
-        global_bb_init_loaded_ = true;
-      } catch (const std::exception & e) {
-        RCLCPP_ERROR(get_logger(), "Failed to load global blackboard init file: %s", e.what());
-        global_bb_init_loaded_ = false;
-        ok = false;
-      }
-    }
   }
   if (!ok) {
     delete_global_blackboard();
