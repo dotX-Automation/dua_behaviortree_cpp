@@ -70,6 +70,8 @@ BT::PortsList TrackNode::providedPorts()
 {
   return {
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 Track action"),
+    BT::InputPort<bool>("align_normal", true, "Whether to align the robot with the normal of the target"),
+    BT::InputPort<bool>("align_yaw", true, "Whether to align the robot yaw with the target"),
     BT::InputPort<std::string>("frame", "Reference frame in which tracking is evaluated"),
     BT::InputPort<std::string>("target_id", "ID of the target to track"),
     BT::InputPort<double>("distance", 0.0, "Desired distance from the target [m]"),
@@ -88,14 +90,19 @@ BT::NodeStatus TrackNode::onStart()
   }
 
   // Get action goal data
+  bool align_normal = getInput<bool>("align_normal").value();
+  bool align_yaw = getInput<bool>("align_yaw").value();
   std::string frame = getInput<std::string>("frame").value();
   std::string target_id = getInput<std::string>("target_id").value();
   double distance = getInput<double>("distance").value();
   bool stop = getInput<bool>("stop").value();
   TrackSide side = getInput<TrackSide>("side").value();
 
+
   // Fill the action goal
   Track::Goal track_goal{};
+  track_goal.set__align_normal(align_normal);
+  track_goal.set__align_yaw(align_yaw);
   track_goal.set__reference_frame(frame);
   track_goal.set__class_id(target_id);
   track_goal.set__desired_distance(distance);
