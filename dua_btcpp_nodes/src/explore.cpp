@@ -180,6 +180,7 @@ void ExploreNode::onHalted()
         e.what());
     }
     current_goal_.reset();
+    current_res_future_.reset();
   }
 }
 
