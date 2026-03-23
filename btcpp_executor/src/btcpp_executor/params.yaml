@@ -13,7 +13,7 @@ params:
   btcpp.groot2_publisher:
     type: bool
     default_value: false
-    description: "Enables Groot2 publisher (requires ZeroMQ and MySQL)"
+    description: "Enables Groot2 publisher on port 1667 (requires ZeroMQ and MySQL)"
     constraints: "Changes require executor restart"
     read_only: false
 
