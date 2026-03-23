@@ -27,6 +27,8 @@ find_package(dua_common_interfaces REQUIRED)
 find_package(dua_hardware_interfaces REQUIRED)
 find_package(dua_movement_interfaces REQUIRED)
 find_package(dua_node_cpp REQUIRED)
+find_package(eigen3_cmake_module REQUIRED)
+find_package(Eigen3 3.4 REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -46,6 +48,8 @@ target_compile_definitions(dua_btcpp_nodes PRIVATE "DUA_BTCPP_NODES_BUILDING_LIB
 target_include_directories(dua_btcpp_nodes PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+target_link_libraries(dua_btcpp_nodes
+  Eigen3::Eigen)
 ament_target_dependencies(dua_btcpp_nodes
   behaviortree_cpp
   dua_aircraft_interfaces
