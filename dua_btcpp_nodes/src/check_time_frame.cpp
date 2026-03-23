@@ -63,7 +63,13 @@ BT::NodeStatus CheckTimeFrame::onStart()
   if (check_time_frame(start_time_str, end_time_str)) {
     return BT::NodeStatus::SUCCESS;
   } else {
-    return wait ? BT::NodeStatus::RUNNING : BT::NodeStatus::FAILURE;
+    if (!wait) {
+      return BT::NodeStatus::FAILURE;
+    }
+    RCLCPP_INFO_THROTTLE(
+      ros2_node_->get_logger(), *ros2_node_->get_clock(), 1000,
+      "CheckTimeFrame: waiting...");
+    return BT::NodeStatus::RUNNING;
   }
 }
 
@@ -81,7 +87,13 @@ BT::NodeStatus CheckTimeFrame::onRunning()
   if (check_time_frame(start_time_str, end_time_str)) {
     return BT::NodeStatus::SUCCESS;
   } else {
-    return wait ? BT::NodeStatus::RUNNING : BT::NodeStatus::FAILURE;
+    if (!wait) {
+      return BT::NodeStatus::FAILURE;
+    }
+    RCLCPP_INFO_THROTTLE(
+      ros2_node_->get_logger(), *ros2_node_->get_clock(), 1000,
+      "CheckTimeFrame: waiting...");
+    return BT::NodeStatus::RUNNING;
   }
 }
 
