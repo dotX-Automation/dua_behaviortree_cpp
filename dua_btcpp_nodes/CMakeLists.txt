@@ -31,6 +31,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
+find_package(rcl_interfaces REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 
@@ -58,6 +59,7 @@ ament_target_dependencies(dua_btcpp_nodes
   pluginlib
   rclcpp
   rclcpp_action
+  rcl_interfaces
   std_msgs
   std_srvs
 )
@@ -105,6 +107,7 @@ ament_export_dependencies(
   pluginlib
   rclcpp
   rclcpp_action
+  rcl_interfaces
   std_msgs
   std_srvs
 )

@@ -52,6 +52,7 @@ void DUARegister::register_nodes(
   // Service clients
   factory.registerNodeType<TriggerComponent>("TriggerComponent", node, entity_manager, wait_servers, spin);
   factory.registerNodeType<SetComponentState>("SetComponentState", node, entity_manager, wait_servers, spin);
+  factory.registerNodeType<SetParameter>("SetParameter", node, entity_manager, wait_servers, spin);
 
   // Topic subscribers
   factory.registerNodeType<SubscriberTrigger>("SubscriberTrigger", node);
@@ -64,6 +65,7 @@ void DUARegister::register_nodes(
   factory.registerNodeType<CheckTimeFrame>("CheckTimeFrame", node);
 
   // Scripting enum types
+  factory.registerScriptingEnums<dua_btcpp_nodes::ParamType>();
   factory.registerScriptingEnums<dua_btcpp_nodes::SafeLandingPolicy>();
   factory.registerScriptingEnums<dua_btcpp_nodes::TrackSide>();
 }
