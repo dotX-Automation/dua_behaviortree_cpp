@@ -71,7 +71,10 @@ BT::PortsList NavigateNode::providedPorts()
   return {
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 Navigate action"),
     BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)"),
-    BT::InputPort<dua_btcpp_types::Point3D>("target", "Target position as dua_btcpp_types::Point3D")
+    BT::InputPort<dua_btcpp_types::Point3D>("target", "Target position as dua_btcpp_types::Point3D"),
+    BT::OutputPort<int>("code", "CommandResultStamped result code"),
+    BT::OutputPort<std::string>("message", "CommandResultStamped message"),
+    BT::OutputPort<CommandResultStamped>("result", "CommandResultStamped result message")
   };
 }
 
@@ -102,6 +105,9 @@ BT::NodeStatus NavigateNode::onStart()
   int timeout_ms = getInput<int>("timeout").value();
   current_goal_ = action_client_->send_goal_sync(nav_goal, spin_, timeout_ms);
   if (current_goal_ == nullptr) {
+    setOutput<int>("code", static_cast<int>(CommandResultStamped::TIMEOUT));
+    setOutput<std::string>("message", "Goal rejected");
+    setOutput<CommandResultStamped>("result", CommandResultStamped{});
     RCLCPP_ERROR(
       ros2_node_->get_logger(),
       "Navigate goal rejected");
@@ -161,7 +167,17 @@ BT::NodeStatus NavigateNode::onRunning()
   rclcpp_action::ResultCode code = goal_result.code;
   Navigate::Result::SharedPtr res = goal_result.result;
   bool success = (code == rclcpp_action::ResultCode::SUCCEEDED || code == rclcpp_action::ResultCode::UNKNOWN) &&
+    res != nullptr &&
     res->result.result == CommandResultStamped::SUCCESS;
+  if (res != nullptr) {
+    setOutput<int>("code", static_cast<int>((*res).result.result));
+    setOutput<std::string>("message", (*res).result.error_msg);
+    setOutput<CommandResultStamped>("result", (*res).result);
+  } else {
+    setOutput<int>("code", static_cast<int>(CommandResultStamped::ERROR));
+    setOutput<std::string>("message", "Server did not return a valid result");
+    setOutput<CommandResultStamped>("result", CommandResultStamped{});
+  }
   if (success) {
     RCLCPP_WARN(ros2_node_->get_logger(), "Navigate succeeded");
     return BT::NodeStatus::SUCCESS;
