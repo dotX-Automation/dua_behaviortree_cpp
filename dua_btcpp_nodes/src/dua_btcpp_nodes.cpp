@@ -63,6 +63,7 @@ void DUARegister::register_nodes(
 
   // Specialized nodes
   factory.registerNodeType<CheckElapsedTime>("CheckElapsedTime", node);
+  factory.registerNodeType<CheckPositionBound>("CheckPositionBound", node);
   factory.registerNodeType<CheckTimeFrame>("CheckTimeFrame", node);
 
   // Scripting enum types
