@@ -130,7 +130,16 @@ BT::NodeStatus SetArrayParameter::tick()
       std::vector<bool> bool_values;
       bool_values.reserve(tokens.size());
       for (const auto & t : tokens) {
-        bool_values.push_back(t == "true" || t == "True" || t == "TRUE");
+        if (t == "true" || t == "True" || t == "TRUE") {
+          bool_values.push_back(true);
+        } else if (t == "false" || t == "False" || t == "FALSE") {
+          bool_values.push_back(false);
+        } else {
+          RCLCPP_ERROR(
+            ros2_node_->get_logger(),
+            "SetArrayParameter: invalid bool value '%s'", t.c_str());
+          return BT::NodeStatus::FAILURE;
+        }
       }
       value_msg.set__bool_array_value(bool_values);
       break;

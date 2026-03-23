@@ -112,7 +112,18 @@ BT::NodeStatus SetParameter::tick()
   value_msg.set__type(p_type_ros);
   switch (p_type) {
     case ParamType::PARAM_BOOL:
-      value_msg.set__bool_value(p_value == "true" || p_value == "True" || p_value == "TRUE");
+      {
+        if (p_value == "true" || p_value == "True" || p_value == "TRUE") {
+          value_msg.set__bool_value(true);
+        } else if (p_value == "false" || p_value == "False" || p_value == "FALSE") {
+          value_msg.set__bool_value(false);
+        } else {
+          RCLCPP_ERROR(
+            ros2_node_->get_logger(),
+            "SetParameter: invalid bool value '%s'", p_value.c_str());
+          return BT::NodeStatus::FAILURE;
+        }
+      }
       break;
     case ParamType::PARAM_DOUBLE:
       try {
