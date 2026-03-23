@@ -77,7 +77,10 @@ BT::PortsList TrackNode::providedPorts()
     BT::InputPort<double>("distance", 0.0, "Desired distance from the target [m]"),
     BT::InputPort<bool>("stop", true, "Whether to stop the operation when the target has been centered in the view"),
     BT::InputPort<TrackSide>("side", TrackSide::TRACK_CENTER, "Side at which the target has been spotted"),
-    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)")
+    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)"),
+    BT::OutputPort<int>("code", "CommandResultStamped result code"),
+    BT::OutputPort<std::string>("message", "CommandResultStamped message"),
+    BT::OutputPort<CommandResultStamped>("result", "CommandResultStamped result message")
   };
 }
 
@@ -113,6 +116,9 @@ BT::NodeStatus TrackNode::onStart()
   int timeout_ms = getInput<int>("timeout").value();
   current_goal_ = action_client_->send_goal_sync(track_goal, spin_, timeout_ms);
   if (current_goal_ == nullptr) {
+    setOutput<int>("code", static_cast<int>(CommandResultStamped::TIMEOUT));
+    setOutput<std::string>("message", "Goal rejected");
+    setOutput<CommandResultStamped>("result", CommandResultStamped{});
     RCLCPP_ERROR(
       ros2_node_->get_logger(),
       "Track goal rejected");
@@ -171,7 +177,17 @@ BT::NodeStatus TrackNode::onRunning()
   rclcpp_action::ResultCode code = goal_result.code;
   Track::Result::SharedPtr res = goal_result.result;
   bool success = (code == rclcpp_action::ResultCode::SUCCEEDED || code == rclcpp_action::ResultCode::UNKNOWN) &&
+    res != nullptr &&
     res->result.result == CommandResultStamped::SUCCESS;
+  if (res != nullptr) {
+    setOutput<int>("code", static_cast<int>((*res).result.result));
+    setOutput<std::string>("message", (*res).result.error_msg);
+    setOutput<CommandResultStamped>("result", (*res).result);
+  } else {
+    setOutput<int>("code", static_cast<int>(CommandResultStamped::ERROR));
+    setOutput<std::string>("message", "Server did not return a valid result");
+    setOutput<CommandResultStamped>("result", CommandResultStamped{});
+  }
   if (success) {
     RCLCPP_WARN(ros2_node_->get_logger(), "Track succeeded");
     return BT::NodeStatus::SUCCESS;

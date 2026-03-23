@@ -70,7 +70,10 @@ BT::PortsList ArmComponent::providedPorts()
 {
   return {
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 Arm action"),
-    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)")
+    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)"),
+    BT::OutputPort<int>("code", "CommandResultStamped result code"),
+    BT::OutputPort<std::string>("message", "CommandResultStamped message"),
+    BT::OutputPort<CommandResultStamped>("result", "CommandResultStamped result message")
   };
 }
 
@@ -89,7 +92,19 @@ BT::NodeStatus ArmComponent::tick()
   bool success = std::get<0>(arm_res) &&
     (std::get<1>(arm_res) == rclcpp_action::ResultCode::SUCCEEDED ||
      std::get<1>(arm_res) == rclcpp_action::ResultCode::UNKNOWN) &&
+    std::get<2>(arm_res) != nullptr &&
     (*(std::get<2>(arm_res))).result.result == CommandResultStamped::SUCCESS;
+
+  // Set output ports
+  if (std::get<2>(arm_res) != nullptr) {
+    setOutput<int>("code", static_cast<int>((*(std::get<2>(arm_res))).result.result));
+    setOutput<std::string>("message", (*(std::get<2>(arm_res))).result.error_msg);
+    setOutput<CommandResultStamped>("result", (*(std::get<2>(arm_res))).result);
+  } else {
+    setOutput<int>("code", static_cast<int>(CommandResultStamped::ERROR));
+    setOutput<std::string>("message", "Server did not return a valid result");
+    setOutput<CommandResultStamped>("result", CommandResultStamped{});
+  }
 
   if (success) {
     return BT::NodeStatus::SUCCESS;
