@@ -116,7 +116,7 @@ BT::NodeStatus TrackNode::onStart()
   int timeout_ms = getInput<int>("timeout").value();
   current_goal_ = action_client_->send_goal_sync(track_goal, spin_, timeout_ms);
   if (current_goal_ == nullptr) {
-    setOutput<int>("code", static_cast<int>(CommandResultStamped::TIMEOUT));
+    setOutput<int>("code", static_cast<int>(CommandResultStamped::ERROR));
     setOutput<std::string>("message", "Goal rejected");
     setOutput<CommandResultStamped>("result", CommandResultStamped{});
     RCLCPP_ERROR(
