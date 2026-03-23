@@ -37,7 +37,7 @@ find_package(std_srvs REQUIRED)
 
 # Build library
 file(GLOB DUA_BTCPP_NODES_SRCS
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" CONFIGURE_DEPENDS
   "src/*.cpp")
 add_library(dua_btcpp_nodes SHARED ${DUA_BTCPP_NODES_SRCS})
 add_library(dua_btcpp_nodes::dua_btcpp_nodes ALIAS dua_btcpp_nodes)

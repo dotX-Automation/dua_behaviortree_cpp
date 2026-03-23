@@ -45,6 +45,7 @@
 #include "trigger_component.hpp"
 #include "set_component_state.hpp"
 #include "set_parameter.hpp"
+#include "set_array_parameter.hpp"
 
 #include "publish_string.hpp"
 
