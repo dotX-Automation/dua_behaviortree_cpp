@@ -112,8 +112,7 @@ BT::NodeStatus SetParameter::tick()
   value_msg.set__type(p_type_ros);
   switch (p_type) {
     case ParamType::PARAM_BOOL:
-      p_value == "true" || p_value == "True" || p_value == "TRUE" ?
-        value_msg.set__bool_value(true) : value_msg.set__bool_value(false);
+      value_msg.set__bool_value(p_value == "true" || p_value == "True" || p_value == "TRUE");
       break;
     case ParamType::PARAM_DOUBLE:
       try {
