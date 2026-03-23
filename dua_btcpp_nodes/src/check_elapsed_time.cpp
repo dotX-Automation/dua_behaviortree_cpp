@@ -56,7 +56,13 @@ BT::NodeStatus CheckElapsedTime::onStart()
   if (check_elapsed_time(time_point, interval)) {
     return BT::NodeStatus::SUCCESS;
   } else {
-    return wait ? BT::NodeStatus::RUNNING : BT::NodeStatus::FAILURE;
+    if (!wait) {
+      return BT::NodeStatus::FAILURE;
+    }
+    RCLCPP_INFO_THROTTLE(
+      ros2_node_->get_logger(), *ros2_node_->get_clock(), 1000,
+      "CheckElapsedTime: waiting...");
+    return BT::NodeStatus::RUNNING;
   }
 }
 
@@ -74,7 +80,13 @@ BT::NodeStatus CheckElapsedTime::onRunning()
   if (check_elapsed_time(time_point, interval)) {
     return BT::NodeStatus::SUCCESS;
   } else {
-    return wait ? BT::NodeStatus::RUNNING : BT::NodeStatus::FAILURE;
+    if (!wait) {
+      return BT::NodeStatus::FAILURE;
+    }
+    RCLCPP_INFO_THROTTLE(
+      ros2_node_->get_logger(), *ros2_node_->get_clock(), 1000,
+      "CheckElapsedTime: waiting...");
+    return BT::NodeStatus::RUNNING;
   }
 }
 
