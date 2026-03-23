@@ -72,7 +72,7 @@ BT::PortsList SetArrayParameter::providedPorts()
 {
   return {
     BT::InputPort<std::string>("pname", "", "Name of the array parameter to set"),
-    BT::InputPort<ArrayParamType>("ptype", ArrayParamType::PARAM_ARRAY_UNDEF,"Type of the ROS 2 array parameter"),
+    BT::InputPort<ArrayParamType>("ptype", ArrayParamType::PARAM_ARRAY_UNDEF, "Type of the ROS 2 array parameter"),
     BT::InputPort<std::string>("pvalue", "", "Semicolon-separated values of the array parameter encoded as strings (spaces must be present only in STRING_ARRAY)"),
     BT::InputPort<std::string>("service_name", "Name of the ROS 2 SetParameters service"),
     BT::OutputPort<std::string>("message", "Message returned by the server")
