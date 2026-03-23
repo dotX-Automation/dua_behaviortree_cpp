@@ -88,6 +88,8 @@ BT::NodeStatus TriggerComponent::tick()
   bool success = res != nullptr && res->success;
   if (res != nullptr) {
     setOutput<std::string>("message", res->message);
+  } else {
+    setOutput<std::string>("message", "Server did not return a valid response");
   }
 
   if (success) {
