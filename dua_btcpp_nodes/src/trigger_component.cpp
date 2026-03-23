@@ -69,7 +69,8 @@ TriggerComponent::~TriggerComponent()
 BT::PortsList TriggerComponent::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("service_name", "Name of the ROS 2 Trigger service")
+    BT::InputPort<std::string>("service_name", "Name of the ROS 2 Trigger service"),
+    BT::OutputPort<std::string>("message", "Message returned by the server")
   };
 }
 
@@ -85,6 +86,9 @@ BT::NodeStatus TriggerComponent::tick()
   Trigger::Request::SharedPtr req = std::make_shared<Trigger::Request>();
   Trigger::Response::SharedPtr res = service_client_->call_sync(req, spin_);
   bool success = res != nullptr && res->success;
+  if (res != nullptr) {
+    setOutput<std::string>("message", res->message);
+  }
 
   if (success) {
     return BT::NodeStatus::SUCCESS;

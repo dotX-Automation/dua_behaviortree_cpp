@@ -70,7 +70,8 @@ BT::PortsList SetComponentState::providedPorts()
 {
   return {
     BT::InputPort<std::string>("service_name", "Name of the ROS 2 SetBool service"),
-    BT::InputPort<bool>("state", "Component state to set")
+    BT::InputPort<bool>("state", "Component state to set"),
+    BT::OutputPort<std::string>("message", "Message returned by the server")
   };
 }
 
@@ -87,6 +88,9 @@ BT::NodeStatus SetComponentState::tick()
   req->set__data(getInput<bool>("state").value());
   SetBool::Response::SharedPtr res = service_client_->call_sync(req, spin_);
   bool success = res != nullptr && res->success;
+  if (res != nullptr) {
+    setOutput<std::string>("message", res->message);
+  }
 
   if (success) {
     return BT::NodeStatus::SUCCESS;
