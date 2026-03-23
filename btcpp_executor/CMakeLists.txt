@@ -43,7 +43,7 @@ generate_init_parameters(
 
 # Configure source files
 file(GLOB BTCPP_EXECUTOR_SRCS
-  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} CONFIGURE_DEPENDS
   "src/btcpp_executor/*.cpp")
 list(APPEND BTCPP_EXECUTOR_SRCS "init_parameters.cpp")
 
