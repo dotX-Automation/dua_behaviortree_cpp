@@ -72,8 +72,9 @@ BT::PortsList VerticalSafeLandingNode::providedPorts()
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 SafeLanding action"),
     BT::InputPort<double>("decision_altitude", "Altitude [m] at which final descent may be started"),
     BT::InputPort<std::string>("frame_id", "Reference frame for the decision altitude setpoint"),
+    BT::InputPort<int>("goal_timeout", 0, "Timeout to wait for the goal [ms]"),
     BT::InputPort<SafeLandingPolicy>("policy", 0, "Safe landing spot choice policy to apply"),
-    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)"),
+    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms]"),
     BT::OutputPort<int>("code", "CommandResultStamped result code"),
     BT::OutputPort<std::string>("message", "CommandResultStamped message"),
     BT::OutputPort<CommandResultStamped>("result", "CommandResultStamped result message")
@@ -101,8 +102,8 @@ BT::NodeStatus VerticalSafeLandingNode::onStart()
   slnd_goal.set__policy(policy);
 
   // Start the safe landing operation
-  int timeout_ms = getInput<int>("timeout").value();
-  current_goal_ = action_client_->send_goal_sync(slnd_goal, spin_, timeout_ms);
+  int goal_timeout_ms = getInput<int>("goal_timeout").value();
+  current_goal_ = action_client_->send_goal_sync(slnd_goal, spin_, goal_timeout_ms);
   if (current_goal_ == nullptr) {
     setOutput<int>("code", static_cast<int>(CommandResultStamped::ERROR));
     setOutput<std::string>("message", "Goal rejected");
@@ -124,10 +125,10 @@ BT::NodeStatus VerticalSafeLandingNode::onStart()
 
 BT::NodeStatus VerticalSafeLandingNode::onRunning()
 {
-  int timeout_ms = getInput<int>("timeout").value();
-  if (timeout_ms <= 0) {
+  int result_timeout_ms = getInput<int>("result_timeout").value();
+  if (result_timeout_ms <= 0) {
     // Poll instantaneously
-    timeout_ms = 10;
+    result_timeout_ms = 10;
   }
 
   // Ask for the result (once)
@@ -141,7 +142,7 @@ BT::NodeStatus VerticalSafeLandingNode::onRunning()
   rclcpp_action::ClientGoalHandle<SafeLanding>::WrappedResult goal_result;
   if (!spin_) {
     // Have to manually check the future
-    auto f_status = current_res_future_->wait_for(std::chrono::milliseconds(timeout_ms));
+    auto f_status = current_res_future_->wait_for(std::chrono::milliseconds(result_timeout_ms));
     if (f_status == std::future_status::ready) {
       goal_result = current_res_future_->get();
     } else {
@@ -152,7 +153,7 @@ BT::NodeStatus VerticalSafeLandingNode::onRunning()
     auto err = rclcpp::spin_until_future_complete(
       ros2_node_->shared_from_this(),
       *current_res_future_,
-      std::chrono::milliseconds(timeout_ms));
+      std::chrono::milliseconds(result_timeout_ms));
     if (err == rclcpp::FutureReturnCode::SUCCESS) {
       goal_result = current_res_future_->get();
     } else {
@@ -190,11 +191,11 @@ void VerticalSafeLandingNode::onHalted()
 {
   // Cancel the current goal, if present
   if (current_goal_ != nullptr) {
-    int timeout_ms = getInput<int>("timeout").value();
+    int goal_timeout_ms = getInput<int>("goal_timeout").value();
 
     try {
       // This might fail upon e.g. process termination
-      action_client_->cancel_and_get_result_sync(current_goal_, spin_, timeout_ms);
+      action_client_->cancel_and_get_result_sync(current_goal_, spin_, goal_timeout_ms);
     } catch (const std::exception & e) {
       RCLCPP_FATAL(
         ros2_node_->get_logger(),

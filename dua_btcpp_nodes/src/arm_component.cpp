@@ -70,7 +70,8 @@ BT::PortsList ArmComponent::providedPorts()
 {
   return {
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 Arm action"),
-    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)"),
+    BT::InputPort<int>("goal_timeout", 0, "Timeout to wait for the goal [ms]"),
+    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms]"),
     BT::OutputPort<int>("code", "CommandResultStamped result code"),
     BT::OutputPort<std::string>("message", "CommandResultStamped message"),
     BT::OutputPort<CommandResultStamped>("result", "CommandResultStamped result message")
@@ -86,9 +87,11 @@ BT::NodeStatus ArmComponent::tick()
   }
 
   // Try to arm the component
-  int timeout_ms = getInput<int>("timeout").value();
+  int goal_timeout_ms = getInput<int>("goal_timeout").value();
+  int result_timeout_ms = getInput<int>("result_timeout").value();
   Arm::Goal arm_goal{};
-  auto arm_res = action_client_->call_sync(arm_goal, spin_, false, timeout_ms, timeout_ms);
+  auto arm_res = action_client_->call_sync(arm_goal, spin_, false, goal_timeout_ms,
+      result_timeout_ms);
   bool success = std::get<0>(arm_res) &&
     (std::get<1>(arm_res) == rclcpp_action::ResultCode::SUCCEEDED ||
      std::get<1>(arm_res) == rclcpp_action::ResultCode::UNKNOWN) &&
