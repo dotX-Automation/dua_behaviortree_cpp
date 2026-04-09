@@ -72,12 +72,13 @@ BT::PortsList TrackNode::providedPorts()
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 Track action"),
     BT::InputPort<bool>("align_normal", true, "Whether to align the robot with the normal of the target"),
     BT::InputPort<bool>("align_yaw", true, "Whether to align the robot yaw with the target"),
-    BT::InputPort<std::string>("frame", "Reference frame in which tracking is evaluated"),
-    BT::InputPort<std::string>("target_id", "ID of the target to track"),
     BT::InputPort<double>("distance", 0.0, "Desired distance from the target [m]"),
-    BT::InputPort<bool>("stop", true, "Whether to stop the operation when the target has been centered in the view"),
+    BT::InputPort<std::string>("frame", "Reference frame in which tracking is evaluated"),
+    BT::InputPort<int>("goal_timeout", 0, "Timeout to wait for the goal [ms]"),
+    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms]"),
     BT::InputPort<TrackSide>("side", TrackSide::TRACK_CENTER, "Side at which the target has been spotted"),
-    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)"),
+    BT::InputPort<bool>("stop", true, "Whether to stop the operation when the target has been centered in the view"),
+    BT::InputPort<std::string>("target_id", "ID of the target to track"),
     BT::OutputPort<int>("code", "CommandResultStamped result code"),
     BT::OutputPort<std::string>("message", "CommandResultStamped message"),
     BT::OutputPort<CommandResultStamped>("result", "CommandResultStamped result message")
@@ -113,8 +114,8 @@ BT::NodeStatus TrackNode::onStart()
   track_goal.set__start_side(static_cast<int8_t>(side));
 
   // Start the track operation
-  int timeout_ms = getInput<int>("timeout").value();
-  current_goal_ = action_client_->send_goal_sync(track_goal, spin_, timeout_ms);
+  int goal_timeout_ms = getInput<int>("goal_timeout").value();
+  current_goal_ = action_client_->send_goal_sync(track_goal, spin_, goal_timeout_ms);
   if (current_goal_ == nullptr) {
     setOutput<int>("code", static_cast<int>(CommandResultStamped::ERROR));
     setOutput<std::string>("message", "Goal rejected");
@@ -135,10 +136,10 @@ BT::NodeStatus TrackNode::onStart()
 
 BT::NodeStatus TrackNode::onRunning()
 {
-  int timeout_ms = getInput<int>("timeout").value();
-  if (timeout_ms <= 0) {
+  int result_timeout_ms = getInput<int>("result_timeout").value();
+  if (result_timeout_ms <= 0) {
     // Poll instantaneously
-    timeout_ms = 10;
+    result_timeout_ms = 10;
   }
 
   // Ask for the result (once)
@@ -152,7 +153,7 @@ BT::NodeStatus TrackNode::onRunning()
   rclcpp_action::ClientGoalHandle<Track>::WrappedResult goal_result;
   if (!spin_) {
     // Have to manually check the future
-    auto f_status = current_res_future_->wait_for(std::chrono::milliseconds(timeout_ms));
+    auto f_status = current_res_future_->wait_for(std::chrono::milliseconds(result_timeout_ms));
     if (f_status == std::future_status::ready) {
       goal_result = current_res_future_->get();
     } else {
@@ -163,7 +164,7 @@ BT::NodeStatus TrackNode::onRunning()
     auto err = rclcpp::spin_until_future_complete(
       ros2_node_->shared_from_this(),
       *current_res_future_,
-      std::chrono::milliseconds(timeout_ms));
+      std::chrono::milliseconds(result_timeout_ms));
     if (err == rclcpp::FutureReturnCode::SUCCESS) {
       goal_result = current_res_future_->get();
     } else {
@@ -201,11 +202,11 @@ void TrackNode::onHalted()
 {
   // Cancel the current goal, if present
   if (current_goal_ != nullptr) {
-    int timeout_ms = getInput<int>("timeout").value();
+    int goal_timeout_ms = getInput<int>("goal_timeout").value();
 
     try {
       // This might fail upon e.g. process termination
-      action_client_->cancel_and_get_result_sync(current_goal_, spin_, timeout_ms);
+      action_client_->cancel_and_get_result_sync(current_goal_, spin_, goal_timeout_ms);
     } catch (const std::exception & e) {
       RCLCPP_FATAL(
         ros2_node_->get_logger(),

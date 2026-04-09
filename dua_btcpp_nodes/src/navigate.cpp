@@ -70,7 +70,8 @@ BT::PortsList NavigateNode::providedPorts()
 {
   return {
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 Navigate action"),
-    BT::InputPort<int>("timeout", 0, "Client operations timeout [ms] (0 means no timeout: wait indefinitely and poll instantaneously)"),
+    BT::InputPort<int>("goal_timeout", 0, "Timeout to wait for the goal [ms]"),
+    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms]"),
     BT::InputPort<dua_btcpp_types::Point3D>("target", "Target position as dua_btcpp_types::Point3D"),
     BT::OutputPort<int>("code", "CommandResultStamped result code"),
     BT::OutputPort<std::string>("message", "CommandResultStamped message"),
@@ -102,8 +103,8 @@ BT::NodeStatus NavigateNode::onStart()
   nav_goal.target_pose.pose.orientation.set__w(tgt.q_w);
 
   // Start the navigation operation
-  int timeout_ms = getInput<int>("timeout").value();
-  current_goal_ = action_client_->send_goal_sync(nav_goal, spin_, timeout_ms);
+  int goal_timeout_ms = getInput<int>("goal_timeout").value();
+  current_goal_ = action_client_->send_goal_sync(nav_goal, spin_, goal_timeout_ms);
   if (current_goal_ == nullptr) {
     setOutput<int>("code", static_cast<int>(CommandResultStamped::ERROR));
     setOutput<std::string>("message", "Goal rejected");
@@ -125,10 +126,10 @@ BT::NodeStatus NavigateNode::onStart()
 
 BT::NodeStatus NavigateNode::onRunning()
 {
-  int timeout_ms = getInput<int>("timeout").value();
-  if (timeout_ms <= 0) {
+  int result_timeout_ms = getInput<int>("result_timeout").value();
+  if (result_timeout_ms <= 0) {
     // Poll instantaneously
-    timeout_ms = 10;
+    result_timeout_ms = 10;
   }
 
   // Ask for the result (once)
@@ -142,7 +143,7 @@ BT::NodeStatus NavigateNode::onRunning()
   rclcpp_action::ClientGoalHandle<Navigate>::WrappedResult goal_result;
   if (!spin_) {
     // Have to manually check the future
-    auto f_status = current_res_future_->wait_for(std::chrono::milliseconds(timeout_ms));
+    auto f_status = current_res_future_->wait_for(std::chrono::milliseconds(result_timeout_ms));
     if (f_status == std::future_status::ready) {
       goal_result = current_res_future_->get();
     } else {
@@ -153,7 +154,7 @@ BT::NodeStatus NavigateNode::onRunning()
     auto err = rclcpp::spin_until_future_complete(
       ros2_node_->shared_from_this(),
       *current_res_future_,
-      std::chrono::milliseconds(timeout_ms));
+      std::chrono::milliseconds(result_timeout_ms));
     if (err == rclcpp::FutureReturnCode::SUCCESS) {
       goal_result = current_res_future_->get();
     } else {
@@ -191,11 +192,11 @@ void NavigateNode::onHalted()
 {
   // Cancel the current goal, if present
   if (current_goal_ != nullptr) {
-    int timeout_ms = getInput<int>("timeout").value();
+    int goal_timeout_ms = getInput<int>("goal_timeout").value();
 
     try {
       // This might fail upon e.g. process termination
-      action_client_->cancel_and_get_result_sync(current_goal_, spin_, timeout_ms);
+      action_client_->cancel_and_get_result_sync(current_goal_, spin_, goal_timeout_ms);
     } catch (const std::exception & e) {
       RCLCPP_FATAL(
         ros2_node_->get_logger(),
