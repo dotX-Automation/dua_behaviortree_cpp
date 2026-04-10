@@ -75,7 +75,7 @@ BT::PortsList TrackNode::providedPorts()
     BT::InputPort<double>("distance", 0.0, "Desired distance from the target [m]"),
     BT::InputPort<std::string>("frame", "Reference frame in which tracking is evaluated"),
     BT::InputPort<int>("goal_timeout", 0, "Timeout to wait for the goal [ms]"),
-    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms]"),
+    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms], set <=0 for instantaneous polling"),
     BT::InputPort<TrackSide>("side", TrackSide::TRACK_CENTER, "Side at which the target has been spotted"),
     BT::InputPort<bool>("stop", true, "Whether to stop the operation when the target has been centered in the view"),
     BT::InputPort<std::string>("target_id", "ID of the target to track"),

@@ -90,8 +90,7 @@ BT::NodeStatus DisarmComponent::tick()
   int goal_timeout_ms = getInput<int>("goal_timeout").value();
   int result_timeout_ms = getInput<int>("result_timeout").value();
   Disarm::Goal disarm_goal{};
-  auto disarm_res = action_client_->call_sync(disarm_goal, spin_, false, goal_timeout_ms,
-      result_timeout_ms);
+  auto disarm_res = action_client_->call_sync(disarm_goal, spin_, false, goal_timeout_ms, result_timeout_ms);
   bool success = std::get<0>(disarm_res) &&
     (std::get<1>(disarm_res) == rclcpp_action::ResultCode::SUCCEEDED ||
      std::get<1>(disarm_res) == rclcpp_action::ResultCode::UNKNOWN) &&

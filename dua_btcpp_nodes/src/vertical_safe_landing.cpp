@@ -74,7 +74,7 @@ BT::PortsList VerticalSafeLandingNode::providedPorts()
     BT::InputPort<std::string>("frame_id", "Reference frame for the decision altitude setpoint"),
     BT::InputPort<int>("goal_timeout", 0, "Timeout to wait for the goal [ms]"),
     BT::InputPort<SafeLandingPolicy>("policy", 0, "Safe landing spot choice policy to apply"),
-    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms]"),
+    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms], set <=0 for instantaneous polling"),
     BT::OutputPort<int>("code", "CommandResultStamped result code"),
     BT::OutputPort<std::string>("message", "CommandResultStamped message"),
     BT::OutputPort<CommandResultStamped>("result", "CommandResultStamped result message")
