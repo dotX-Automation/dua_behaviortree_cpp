@@ -73,7 +73,7 @@ BT::PortsList ExploreNode::providedPorts()
     BT::InputPort<bool>("first", false, "Whether this is the first time exploration is performed"),
     BT::InputPort<int>("goal_timeout", 0, "Timeout to wait for the goal [ms]"),
     BT::InputPort<bool>("persistent", false, "Whether exploration should go on indefinitely"),
-    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms]"),
+    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms], set <=0 for instantaneous polling"),
     BT::InputPort<Polygon>("zone", Polygon{}, "Polygon defining the area to explore"),
     BT::OutputPort<int>("code", "CommandResultStamped result code"),
     BT::OutputPort<std::string>("message", "CommandResultStamped message"),

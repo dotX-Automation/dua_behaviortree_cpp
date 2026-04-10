@@ -71,7 +71,7 @@ BT::PortsList NavigateNode::providedPorts()
   return {
     BT::InputPort<std::string>("action_name", "Name of the ROS 2 Navigate action"),
     BT::InputPort<int>("goal_timeout", 0, "Timeout to wait for the goal [ms]"),
-    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms]"),
+    BT::InputPort<int>("result_timeout", 0, "Timeout to wait for the result [ms], set <=0 for instantaneous polling"),
     BT::InputPort<dua_btcpp_types::Point3D>("target", "Target position as dua_btcpp_types::Point3D"),
     BT::OutputPort<int>("code", "CommandResultStamped result code"),
     BT::OutputPort<std::string>("message", "CommandResultStamped message"),

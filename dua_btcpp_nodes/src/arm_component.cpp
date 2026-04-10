@@ -90,8 +90,7 @@ BT::NodeStatus ArmComponent::tick()
   int goal_timeout_ms = getInput<int>("goal_timeout").value();
   int result_timeout_ms = getInput<int>("result_timeout").value();
   Arm::Goal arm_goal{};
-  auto arm_res = action_client_->call_sync(arm_goal, spin_, false, goal_timeout_ms,
-      result_timeout_ms);
+  auto arm_res = action_client_->call_sync(arm_goal, spin_, false, goal_timeout_ms, result_timeout_ms);
   bool success = std::get<0>(arm_res) &&
     (std::get<1>(arm_res) == rclcpp_action::ResultCode::SUCCEEDED ||
      std::get<1>(arm_res) == rclcpp_action::ResultCode::UNKNOWN) &&
