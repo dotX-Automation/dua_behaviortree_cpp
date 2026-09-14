@@ -2,7 +2,7 @@
 
 ROS 2 components for the integration of the [`BehaviorTree.CPP`](https://github.com/BehaviorTree/BehaviorTree.CPP) library in the DUA framework.
 
-This code is part of the supplementary materials for the paper titled "Priority-driven task scheduling with Behavior Trees for autonomous robot swarms", submitted for review to the journal IEEE Robotics and Automation Practice (RA-P).
+This code is part of the supplementary materials for the paper titled "Reactive task execution in heterogeneous robot teams via shared spatial memory and Behavior Trees", submitted for review to the IEEE International Conference on Robotics and Automation (ICRA) 2027.
 
 ## Contents
 
