@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <stdexcept>
 
@@ -95,7 +96,7 @@ private:
   rclcpp::Subscription<Empty>::SharedPtr subscriber_ = nullptr;
 
   /* Message received flag. */
-  bool trigger_ = false;
+  std::atomic<bool> trigger_{false};
 
   /* ROS 2 topic callback. */
   void trigger_clbk(const Empty::SharedPtr msg);

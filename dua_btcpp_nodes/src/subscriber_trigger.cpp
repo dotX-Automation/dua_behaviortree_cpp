@@ -22,8 +22,6 @@
  * limitations under the License.
  */
 
-#define UNUSED(arg) (void)(arg)
-
 #include <dua_btcpp_nodes/subscriber_trigger.hpp>
 
 namespace dua_btcpp_nodes
@@ -81,10 +79,10 @@ BT::PortsList SubscriberTrigger::providedPorts()
 BT::NodeStatus SubscriberTrigger::onStart()
 {
   // Check if the trigger was already received and the node is just being ticked again
-  if (trigger_ && !getInput<bool>("reset").value()) {
+  if (trigger_.load(std::memory_order_acquire) && !getInput<bool>("reset").value()) {
     return BT::NodeStatus::SUCCESS;
   } else {
-    trigger_ = false;
+    trigger_.store(false, std::memory_order_release);
   }
 
   // Create the subscriber if it wasn't created already
@@ -111,10 +109,10 @@ BT::NodeStatus SubscriberTrigger::onStart()
 
 BT::NodeStatus SubscriberTrigger::onRunning()
 {
-  if (trigger_) {
+  if (trigger_.load(std::memory_order_acquire)) {
     subscriber_.reset();
     if (getInput<bool>("reset").value()) {
-      trigger_ = false;
+      trigger_.store(false, std::memory_order_release);
     }
     return BT::NodeStatus::SUCCESS;
   }
@@ -124,13 +122,12 @@ BT::NodeStatus SubscriberTrigger::onRunning()
 void SubscriberTrigger::onHalted()
 {
   subscriber_.reset();
-  trigger_ = false;
+  trigger_.store(false, std::memory_order_release);
 }
 
-void SubscriberTrigger::trigger_clbk(const Empty::SharedPtr msg)
+void SubscriberTrigger::trigger_clbk([[maybe_unused]] const Empty::SharedPtr msg)
 {
-  UNUSED(msg);
-  trigger_ = true;
+  trigger_.store(true, std::memory_order_release);
 }
 
 } // namespace dua_btcpp_nodes
